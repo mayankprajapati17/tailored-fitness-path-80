@@ -1,18 +1,16 @@
-
 import { useState } from 'react';
 import { WorkoutPlan as WorkoutPlanType, WorkoutDay, FitnessGoal } from '../types';
 import WorkoutCard from './WorkoutCard';
 import ProgressBar from './ProgressBar';
 import { calculateCompletionPercentage } from '../utils/workoutGenerator';
 import { Button } from '@/components/ui/button';
-import { Share2, Edit, Trophy, DumbellIcon } from 'lucide-react';
+import { Share2, Edit, Trophy, DumbbellIcon } from 'lucide-react';
 
 interface WorkoutPlanProps {
   plan: WorkoutPlanType;
   onUpdate: (updatedPlan: WorkoutPlanType) => void;
 }
 
-// Define workout type header images
 const workoutTypeHeaders: Record<FitnessGoal, string> = {
   strength: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48',
   cardio: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8',
@@ -25,7 +23,6 @@ const workoutTypeHeaders: Record<FitnessGoal, string> = {
 const WorkoutPlan = ({ plan, onUpdate }: WorkoutPlanProps) => {
   const [selectedDay, setSelectedDay] = useState<WorkoutDay>(plan.days[0]);
   
-  // Handle marking a day as complete
   const handleDayCompletion = (day: WorkoutDay) => {
     const updatedDays = plan.days.map(d => 
       d.day === day.day ? { ...d, completed: !d.completed } : d
@@ -40,17 +37,13 @@ const WorkoutPlan = ({ plan, onUpdate }: WorkoutPlanProps) => {
     onUpdate(updatedPlan);
   };
   
-  // Handle marking an exercise as complete
   const handleExerciseComplete = () => {
-    // This could be expanded to track individual exercise completion if needed
   };
 
-  // Get the appropriate header image for the workout goal
   const headerImage = workoutTypeHeaders[plan.goal] || workoutTypeHeaders.strength;
   
   return (
     <div className="bg-white dark:bg-card rounded-xl border border-border shadow-sm animate-fade-in overflow-hidden">
-      {/* Workout Type Header Image */}
       <div 
         className="relative h-48 w-full bg-cover bg-center" 
         style={{ backgroundImage: `url('${headerImage}')` }}
@@ -69,7 +62,7 @@ const WorkoutPlan = ({ plan, onUpdate }: WorkoutPlanProps) => {
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-center">
             <div className="mr-3 p-2 rounded-full bg-primary/10">
-              {plan.goal === 'strength' && <DumbellIcon className="w-5 h-5 text-primary" />}
+              {plan.goal === 'strength' && <DumbbellIcon className="w-5 h-5 text-primary" />}
               {plan.goal === 'cardio' && (
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M18 7v10M18 12h-8m0-9.5v17" />
@@ -120,7 +113,6 @@ const WorkoutPlan = ({ plan, onUpdate }: WorkoutPlanProps) => {
       </div>
       
       <div className="flex flex-col md:flex-row">
-        {/* Day selection sidebar */}
         <div className="w-full md:w-64 border-r border-border">
           <div className="p-3">
             <ul>
@@ -171,7 +163,6 @@ const WorkoutPlan = ({ plan, onUpdate }: WorkoutPlanProps) => {
           </div>
         </div>
         
-        {/* Exercise list */}
         <div className="flex-1 p-6">
           <h3 className="text-lg font-display font-medium mb-4">
             {selectedDay.day}'s Exercises
