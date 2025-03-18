@@ -5,14 +5,18 @@ import WorkoutForm from '../components/WorkoutForm';
 import WorkoutPlan from '../components/WorkoutPlan';
 import Notification from '../components/Notification';
 import { WorkoutFormData, WorkoutPlan as WorkoutPlanType, Notification as NotificationType } from '../types';
-import { generateWorkoutPlan, getRandomTip } from '../utils/workoutGenerator';
+import { generateWorkoutPlan } from '../utils/workoutGenerator';
+import { generateWorkoutPlanWithGemini } from '../utils/geminiService';
+import { getRandomTip } from '../utils/workoutGenerator';
 import { Button } from '../components/ui/button';
 import { PlusCircle } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
   const [workoutPlan, setWorkoutPlan] = useState<WorkoutPlanType | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [notifications, setNotifications] = useState<NotificationType[]>([]);
+  const { toast } = useToast();
   
   // Load saved plan from localStorage on mount
   useEffect(() => {
@@ -76,29 +80,42 @@ const Index = () => {
     setIsGenerating(true);
     
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Generate workout plan
-      const newPlan = generateWorkoutPlan(formData);
+      // Use Gemini API to generate workout plan
+      const newPlan = await generateWorkoutPlanWithGemini(formData);
       
       setWorkoutPlan(newPlan);
       
       // Show success notification
+      toast({
+        title: "Success!",
+        description: "Your workout plan has been generated using Gemini AI.",
+        variant: "default",
+      });
+      
       addNotification({
         id: `success-${Date.now()}`,
-        message: 'Your workout plan has been generated successfully!',
+        message: 'Your workout plan has been generated using Gemini AI!',
         type: 'success',
         read: false
       });
     } catch (error) {
       console.error('Error generating workout plan', error);
       
-      // Show error notification
+      // Fall back to mock generator
+      const fallbackPlan = generateWorkoutPlan(formData);
+      setWorkoutPlan(fallbackPlan);
+      
+      // Show warning notification about fallback
+      toast({
+        title: "AI Service Unavailable",
+        description: "Using backup generator. Some features may be limited.",
+        variant: "destructive",
+      });
+      
       addNotification({
-        id: `error-${Date.now()}`,
-        message: 'Failed to generate workout plan. Please try again.',
-        type: 'error',
+        id: `warning-${Date.now()}`,
+        message: 'Could not connect to Gemini AI. Using backup generator instead.',
+        type: 'warning',
         read: false
       });
     } finally {
