@@ -25,6 +25,9 @@ const Header = ({ title, description }: HeaderProps) => {
     };
   }, []);
 
+  // Background image
+  const backgroundImage = 'https://images.unsplash.com/photo-1571945153237-4929e783af4a';
+
   return (
     <header 
       className={`sticky top-0 z-50 py-4 px-6 transition-all duration-300 ${
@@ -32,6 +35,11 @@ const Header = ({ title, description }: HeaderProps) => {
           ? 'bg-white/80 dark:bg-background/80 backdrop-blur-md shadow-sm border-b border-border/50' 
           : 'bg-transparent'
       }`}
+      style={{
+        backgroundImage: isScrolled ? 'none' : `linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)), url('${backgroundImage}')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
+      }}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex flex-col">

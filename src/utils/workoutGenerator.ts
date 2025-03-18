@@ -1,4 +1,3 @@
-
 import { 
   Exercise, 
   FitnessGoal, 
@@ -9,7 +8,7 @@ import {
   DayOfWeek
 } from '../types';
 
-// Exercise database with dummy exercise data
+// Exercise database with exercise data and images
 const exerciseDatabase: Exercise[] = [
   {
     id: '1',
@@ -17,7 +16,8 @@ const exerciseDatabase: Exercise[] = [
     description: 'A classic bodyweight exercise that targets your chest, shoulders, and triceps.',
     sets: 3,
     reps: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+    equipment: 'none',
+    imageUrl: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b'
   },
   {
     id: '2',
@@ -25,14 +25,16 @@ const exerciseDatabase: Exercise[] = [
     description: 'A compound exercise that primarily targets your quadriceps, hamstrings, and glutes.',
     sets: 3,
     reps: 15,
-    imageUrl: 'https://images.unsplash.com/photo-1434682881908-b43d0467b798?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+    equipment: 'none',
+    imageUrl: 'https://images.unsplash.com/photo-1434682881908-b43d0467b798'
   },
   {
     id: '3',
     name: 'Planks',
     description: 'An isometric core exercise that improves your stability and strengthens your abdomen.',
     duration: 30,
-    imageUrl: 'https://images.unsplash.com/photo-1566241440091-ec10de8db2e1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+    equipment: 'none',
+    imageUrl: 'https://images.unsplash.com/photo-1566241440091-ec10de8db2e1'
   },
   {
     id: '4',
@@ -40,7 +42,8 @@ const exerciseDatabase: Exercise[] = [
     description: 'A full-body exercise that combines a squat, push-up, and jump, great for cardio.',
     sets: 3,
     reps: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1593164842264-854604db2260?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+    equipment: 'none',
+    imageUrl: 'https://images.unsplash.com/photo-1593164842264-854604db2260'
   },
   {
     id: '5',
@@ -48,14 +51,16 @@ const exerciseDatabase: Exercise[] = [
     description: 'A unilateral exercise that works your quadriceps, hamstrings, and glutes.',
     sets: 3,
     reps: 12,
-    imageUrl: 'https://images.unsplash.com/photo-1534258936925-c58bed479fcb?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+    equipment: 'none',
+    imageUrl: 'https://images.unsplash.com/photo-1534258936925-c58bed479fcb'
   },
   {
     id: '6',
     name: 'Mountain Climbers',
     description: 'A dynamic core exercise that also elevates your heart rate for cardio benefits.',
     duration: 45,
-    imageUrl: 'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+    equipment: 'none',
+    imageUrl: 'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5'
   },
   {
     id: '7',
@@ -63,14 +68,16 @@ const exerciseDatabase: Exercise[] = [
     description: 'A back exercise that targets your lats, rhomboids, and biceps.',
     sets: 3,
     reps: 12,
-    imageUrl: 'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+    equipment: 'dumbbells',
+    imageUrl: 'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61'
   },
   {
     id: '8',
     name: 'Jump Rope',
     description: 'A cardiovascular exercise that improves coordination and burns calories.',
     duration: 60,
-    imageUrl: 'https://images.unsplash.com/photo-1515238152791-8216bfdf89a7?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+    equipment: 'none',
+    imageUrl: 'https://images.unsplash.com/photo-1515238152791-8216bfdf89a7'
   },
   {
     id: '9',
@@ -78,7 +85,8 @@ const exerciseDatabase: Exercise[] = [
     description: 'A core exercise that targets your obliques and rectus abdominis.',
     sets: 3,
     reps: 20,
-    imageUrl: 'https://images.unsplash.com/photo-1571945153237-4929e783af4a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+    equipment: 'none',
+    imageUrl: 'https://images.unsplash.com/photo-1571945153237-4929e783af4a'
   },
   {
     id: '10',
@@ -86,28 +94,32 @@ const exerciseDatabase: Exercise[] = [
     description: 'A dynamic exercise that targets your posterior chain and provides cardiovascular benefits.',
     sets: 3,
     reps: 15,
-    imageUrl: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+    equipment: 'kettlebell',
+    imageUrl: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438'
   },
   {
     id: '11',
     name: 'Yoga Downward Dog',
     description: 'A yoga pose that stretches the hamstrings, calves, and shoulders.',
     duration: 45,
-    imageUrl: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+    equipment: 'none',
+    imageUrl: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b'
   },
   {
     id: '12',
     name: 'Yoga Warrior Pose',
     description: 'A standing yoga pose that builds strength and improves focus.',
     duration: 30,
-    imageUrl: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+    equipment: 'none',
+    imageUrl: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773'
   },
   {
     id: '13',
     name: 'Jogging',
     description: 'A cardiovascular exercise that improves endurance and burns calories.',
     duration: 600,
-    imageUrl: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+    equipment: 'none',
+    imageUrl: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8'
   },
   {
     id: '14',
@@ -115,7 +127,8 @@ const exerciseDatabase: Exercise[] = [
     description: 'A compound exercise that targets your posterior chain, especially your back and hamstrings.',
     sets: 3,
     reps: 8,
-    imageUrl: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+    equipment: 'gym',
+    imageUrl: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48'
   },
   {
     id: '15',
@@ -123,30 +136,51 @@ const exerciseDatabase: Exercise[] = [
     description: 'A compound exercise that targets your chest, shoulders, and triceps.',
     sets: 3,
     reps: 8,
-    imageUrl: 'https://images.unsplash.com/photo-1584466977773-e625c37cdd50?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+    equipment: 'gym',
+    imageUrl: 'https://images.unsplash.com/photo-1584466977773-e625c37cdd50'
   }
 ];
 
 // Filter exercises based on fitness goal and available equipment
 const filterExercises = (goal: FitnessGoal, equipment: Equipment[]): Exercise[] => {
-  // In a real app, this would filter from a database based on goal and equipment
-  // For this mock, we'll return a subset of exercises based on the goal
+  // First filter by goal
+  let filteredByGoal: Exercise[];
   switch (goal) {
     case 'strength':
-      return exerciseDatabase.filter(e => ['1', '2', '5', '7', '10', '14', '15'].includes(e.id));
+      filteredByGoal = exerciseDatabase.filter(e => ['1', '2', '5', '7', '10', '14', '15'].includes(e.id));
+      break;
     case 'cardio':
-      return exerciseDatabase.filter(e => ['4', '6', '8', '13'].includes(e.id));
+      filteredByGoal = exerciseDatabase.filter(e => ['4', '6', '8', '13'].includes(e.id));
+      break;
     case 'endurance':
-      return exerciseDatabase.filter(e => ['1', '2', '4', '8', '13'].includes(e.id));
+      filteredByGoal = exerciseDatabase.filter(e => ['1', '2', '4', '8', '13'].includes(e.id));
+      break;
     case 'yoga':
-      return exerciseDatabase.filter(e => ['3', '11', '12'].includes(e.id));
+      filteredByGoal = exerciseDatabase.filter(e => ['3', '11', '12'].includes(e.id));
+      break;
     case 'flexibility':
-      return exerciseDatabase.filter(e => ['5', '11', '12'].includes(e.id));
+      filteredByGoal = exerciseDatabase.filter(e => ['5', '11', '12'].includes(e.id));
+      break;
     case 'balance':
-      return exerciseDatabase.filter(e => ['3', '5', '11', '12'].includes(e.id));
+      filteredByGoal = exerciseDatabase.filter(e => ['3', '5', '11', '12'].includes(e.id));
+      break;
     default:
-      return exerciseDatabase;
+      filteredByGoal = exerciseDatabase;
   }
+  
+  // Then filter by equipment if equipment array is not empty
+  if (equipment && equipment.length > 0) {
+    // If 'none' is selected, include bodyweight exercises
+    const includeBodyweight = equipment.includes('none');
+    
+    // If equipment other than 'none' is selected, include those exercises
+    return filteredByGoal.filter(exercise => 
+      includeBodyweight && exercise.equipment === 'none' || 
+      (exercise.equipment !== 'none' && equipment.includes(exercise.equipment as Equipment))
+    );
+  }
+  
+  return filteredByGoal;
 };
 
 // Adjust exercise difficulty based on experience level

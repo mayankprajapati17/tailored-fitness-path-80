@@ -24,6 +24,7 @@ export interface Exercise {
   reps?: number;
   duration?: number; // in seconds
   imageUrl?: string;
+  equipment?: Equipment;
 }
 
 export interface WorkoutDay {
