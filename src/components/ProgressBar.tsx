@@ -56,7 +56,10 @@ const ProgressBar = ({
       <div className={`bg-secondary rounded-full overflow-hidden ${heightClasses[size]}`}>
         <div 
           className={`${color} rounded-full ${animated ? 'transition-all duration-1000 ease-out' : ''}`}
-          style={{ width: `${width}%` }}
+          style={{ 
+            width: `${width}%`,
+            background: 'linear-gradient(90deg, var(--primary) 0%, var(--primary) 50%, #fd7e14 100%)'
+          }}
         />
       </div>
       

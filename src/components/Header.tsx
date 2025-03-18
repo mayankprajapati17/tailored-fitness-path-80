@@ -1,5 +1,7 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { PlusCircle } from 'lucide-react';
 
 interface HeaderProps {
   title: string;
@@ -10,7 +12,7 @@ const Header = ({ title, description }: HeaderProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
 
   // Add scroll event listener on mount
-  useState(() => {
+  useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
@@ -21,7 +23,7 @@ const Header = ({ title, description }: HeaderProps) => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  });
+  }, []);
 
   return (
     <header 
@@ -44,9 +46,10 @@ const Header = ({ title, description }: HeaderProps) => {
         </div>
         
         <div className="flex items-center space-x-4">
-          <button className="glass-button">
+          <Button variant="outline" size="sm" className="font-medium">
+            <PlusCircle className="w-4 h-4 mr-2" />
             New Plan
-          </button>
+          </Button>
         </div>
       </div>
     </header>

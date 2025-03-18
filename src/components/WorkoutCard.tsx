@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
 import { Exercise } from '../types';
+import { Check } from 'lucide-react';
 
 interface WorkoutCardProps {
   exercise: Exercise;
@@ -40,6 +41,9 @@ const WorkoutCard = ({ exercise, onComplete, completed = false, isLast = false }
     }
   };
 
+  // Use a placeholder image if none is provided
+  const imageUrl = exercise.imageUrl || 'https://images.unsplash.com/photo-1535268647677-300dbf3d78d1';
+
   return (
     <div 
       className={`workout-card ${isFlipped ? 'bg-secondary/80' : ''} ${
@@ -54,17 +58,15 @@ const WorkoutCard = ({ exercise, onComplete, completed = false, isLast = false }
           }`}
         >
           <div className="flex-1">
-            {exercise.imageUrl && (
-              <div className="relative w-full aspect-video rounded-lg overflow-hidden mb-3">
-                <img 
-                  src={exercise.imageUrl} 
-                  alt={exercise.name} 
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                />
-              </div>
-            )}
+            <div className="relative w-full aspect-video rounded-lg overflow-hidden mb-3">
+              <img 
+                src={imageUrl} 
+                alt={exercise.name} 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+              />
+            </div>
             
-            <h3 className="text-lg font-medium mb-1">{exercise.name}</h3>
+            <h3 className="text-lg font-display font-medium mb-1">{exercise.name}</h3>
             
             <div className="flex flex-wrap gap-2 mb-3">
               {exercise.sets && (
@@ -103,17 +105,7 @@ const WorkoutCard = ({ exercise, onComplete, completed = false, isLast = false }
                   : 'border-input hover:bg-secondary transition-colors'
               }`}
             >
-              {isCompleted && (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              )}
+              {isCompleted && <Check className="h-4 w-4" />}
               <span className="sr-only">{isCompleted ? 'Mark as incomplete' : 'Mark as complete'}</span>
             </button>
           </div>
@@ -126,7 +118,7 @@ const WorkoutCard = ({ exercise, onComplete, completed = false, isLast = false }
           }`}
         >
           <div className="flex-1">
-            <h3 className="text-lg font-medium mb-3">{exercise.name}</h3>
+            <h3 className="text-lg font-display font-medium mb-3">{exercise.name}</h3>
             <p className="text-sm text-muted-foreground mb-3">
               {exercise.description}
             </p>

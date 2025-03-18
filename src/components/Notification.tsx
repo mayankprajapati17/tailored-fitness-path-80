@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Notification as NotificationType } from '../types';
+import { X } from 'lucide-react';
 
 interface NotificationProps {
   notification: NotificationType;
@@ -72,15 +73,7 @@ const Notification = ({
           onClick={handleDismiss}
           className="ml-4 inline-flex h-6 w-6 items-center justify-center rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          <X className="h-4 w-4" />
           <span className="sr-only">Close</span>
         </button>
       </div>

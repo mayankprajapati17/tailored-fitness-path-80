@@ -1,9 +1,11 @@
 
 import { useState } from 'react';
-import { WorkoutPlan as WorkoutPlanType, WorkoutDay, Exercise } from '../types';
+import { WorkoutPlan as WorkoutPlanType, WorkoutDay } from '../types';
 import WorkoutCard from './WorkoutCard';
 import ProgressBar from './ProgressBar';
 import { calculateCompletionPercentage } from '../utils/workoutGenerator';
+import { Button } from '@/components/ui/button';
+import { Share2, Edit } from 'lucide-react';
 
 interface WorkoutPlanProps {
   plan: WorkoutPlanType;
@@ -38,19 +40,21 @@ const WorkoutPlan = ({ plan, onUpdate }: WorkoutPlanProps) => {
       <div className="p-6 pb-4 border-b border-border">
         <div className="flex justify-between items-start mb-4">
           <div>
-            <h2 className="text-xl font-medium">{plan.name}</h2>
+            <h2 className="text-xl font-display font-medium">{plan.name}</h2>
             <p className="text-sm text-muted-foreground">
               Created on {plan.createdAt.toLocaleDateString()}
             </p>
           </div>
           
           <div className="flex items-center space-x-2">
-            <button className="glass-button">
+            <Button variant="outline" size="sm">
+              <Edit className="w-4 h-4 mr-2" />
               Edit
-            </button>
-            <button className="glass-button">
+            </Button>
+            <Button variant="outline" size="sm">
+              <Share2 className="w-4 h-4 mr-2" />
               Share
-            </button>
+            </Button>
           </div>
         </div>
         
@@ -113,7 +117,7 @@ const WorkoutPlan = ({ plan, onUpdate }: WorkoutPlanProps) => {
         
         {/* Exercise list */}
         <div className="flex-1 p-6">
-          <h3 className="text-lg font-medium mb-4">
+          <h3 className="text-lg font-display font-medium mb-4">
             {selectedDay.day}'s Exercises
             {selectedDay.completed && (
               <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700 ml-2">

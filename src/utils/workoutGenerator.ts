@@ -1,475 +1,283 @@
 
-import { FitnessGoal, ExperienceLevel, Equipment, WorkoutFormData, WorkoutPlan, WorkoutDay, Exercise, DayOfWeek } from "../types";
+import { 
+  Exercise, 
+  FitnessGoal, 
+  ExperienceLevel, 
+  Equipment,
+  WorkoutFormData, 
+  WorkoutPlan, 
+  DayOfWeek
+} from '../types';
 
-// Mock exercise database
-const exerciseDatabase: Record<FitnessGoal, Record<ExperienceLevel, Exercise[]>> = {
-  strength: {
-    beginner: [
-      { 
-        id: 'sb1', 
-        name: 'Push-ups', 
-        description: 'Place your hands shoulder-width apart and lower your body until your chest nearly touches the floor.',
-        sets: 3, 
-        reps: 10,
-        imageUrl: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      },
-      { 
-        id: 'sb2', 
-        name: 'Bodyweight Squats', 
-        description: 'Stand with feet shoulder-width apart, lower your body as if sitting in an invisible chair.',
-        sets: 3, 
-        reps: 15,
-        imageUrl: 'https://images.unsplash.com/photo-1574680178050-55c6a6a96e0a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      },
-      { 
-        id: 'sb3', 
-        name: 'Plank', 
-        description: 'Hold a push-up position with your body in a straight line from head to heels.',
-        sets: 3, 
-        duration: 30,
-        imageUrl: 'https://images.unsplash.com/photo-1566241142559-40a9552db917?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      },
-      { 
-        id: 'sb4', 
-        name: 'Lunges', 
-        description: 'Step forward with one leg, lowering your hips until both knees are bent at 90 degrees.',
-        sets: 3, 
-        reps: 10,
-        imageUrl: 'https://images.unsplash.com/photo-1434608519344-49d8a9e40047?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      },
-      { 
-        id: 'sb5', 
-        name: 'Glute Bridges', 
-        description: 'Lie on your back with knees bent, lift hips towards the ceiling.',
-        sets: 3, 
-        reps: 15,
-        imageUrl: 'https://images.unsplash.com/photo-1517637382994-f02da38c6728?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      }
-    ],
-    intermediate: [
-      { 
-        id: 'si1', 
-        name: 'Pull-ups', 
-        description: 'Hang from a bar with palms facing away, pull your body up until chin is over the bar.',
-        sets: 4, 
-        reps: 8,
-        imageUrl: 'https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      },
-      { 
-        id: 'si2', 
-        name: 'Dumbbell Bench Press', 
-        description: 'Lie on a bench, holding dumbbells at chest level, press them upward.',
-        sets: 4, 
-        reps: 10,
-        imageUrl: 'https://images.unsplash.com/photo-1584863231364-2edc166de576?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      },
-      { 
-        id: 'si3', 
-        name: 'Barbell Squats', 
-        description: 'Place a barbell on your upper back, squat down until thighs are parallel to floor.',
-        sets: 4, 
-        reps: 12,
-        imageUrl: 'https://images.unsplash.com/photo-1534368959876-26d6f0631696?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      }
-    ],
-    advanced: [
-      { 
-        id: 'sa1', 
-        name: 'Deadlifts', 
-        description: 'With barbell in front, hinge at hips and bend knees to lower and grab bar, then stand up straight.',
-        sets: 5, 
-        reps: 5,
-        imageUrl: 'https://images.unsplash.com/photo-1517963879433-6ad2b056d712?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      },
-      { 
-        id: 'sa2', 
-        name: 'Power Cleans', 
-        description: 'Explosively lift barbell from floor to shoulders in one motion.',
-        sets: 5, 
-        reps: 3,
-        imageUrl: 'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      }
-    ]
+// Exercise database with dummy exercise data
+const exerciseDatabase: Exercise[] = [
+  {
+    id: '1',
+    name: 'Push-ups',
+    description: 'A classic bodyweight exercise that targets your chest, shoulders, and triceps.',
+    sets: 3,
+    reps: 10,
+    imageUrl: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
   },
-  cardio: {
-    beginner: [
-      { 
-        id: 'cb1', 
-        name: 'Brisk Walking', 
-        description: 'Walk at a pace that elevates your heart rate.',
-        duration: 1200,
-        imageUrl: 'https://images.unsplash.com/photo-1538263703604-1c2fb9d5576f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      },
-      { 
-        id: 'cb2', 
-        name: 'Stationary Bike (Low Intensity)', 
-        description: 'Cycle at a comfortable pace with low resistance.',
-        duration: 900,
-        imageUrl: 'https://images.unsplash.com/photo-1520877880798-5ee004e3f11e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      }
-    ],
-    intermediate: [
-      { 
-        id: 'ci1', 
-        name: 'Jogging', 
-        description: 'Run at a moderate pace that allows you to maintain conversation.',
-        duration: 1500,
-        imageUrl: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      },
-      { 
-        id: 'ci2', 
-        name: 'Jump Rope', 
-        description: 'Skip rope at a steady pace, alternating foot patterns.',
-        sets: 3, 
-        duration: 180,
-        imageUrl: 'https://images.unsplash.com/photo-1559476613-e52819baa7b1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      }
-    ],
-    advanced: [
-      { 
-        id: 'ca1', 
-        name: 'HIIT Sprints', 
-        description: 'Alternate between 30 seconds of all-out sprinting and 30 seconds of rest.',
-        sets: 10, 
-        duration: 30,
-        imageUrl: 'https://images.unsplash.com/photo-1571008887538-b36bb32f4571?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      },
-      { 
-        id: 'ca2', 
-        name: 'Rowing Machine Intervals', 
-        description: 'Row hard for 1 minute, rest for 30 seconds.',
-        sets: 8, 
-        duration: 60,
-        imageUrl: 'https://images.unsplash.com/photo-1519505907962-0a6cb0167c73?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      }
-    ]
+  {
+    id: '2',
+    name: 'Squats',
+    description: 'A compound exercise that primarily targets your quadriceps, hamstrings, and glutes.',
+    sets: 3,
+    reps: 15,
+    imageUrl: 'https://images.unsplash.com/photo-1434682881908-b43d0467b798?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
   },
-  endurance: {
-    beginner: [
-      { 
-        id: 'eb1', 
-        name: 'Swimming (Slow Pace)', 
-        description: 'Swim using any stroke at a comfortable pace.',
-        duration: 900,
-        imageUrl: 'https://images.unsplash.com/photo-1530549387789-4c1017266635?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      },
-      { 
-        id: 'eb2', 
-        name: 'Elliptical Trainer', 
-        description: 'Use the elliptical at a steady pace with low resistance.',
-        duration: 1200,
-        imageUrl: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      }
-    ],
-    intermediate: [
-      { 
-        id: 'ei1', 
-        name: 'Distance Running', 
-        description: 'Run at a comfortable pace for a longer duration.',
-        duration: 2400,
-        imageUrl: 'https://images.unsplash.com/photo-1543683532-5e19d4de09ad?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      },
-      { 
-        id: 'ei2', 
-        name: 'Cycling', 
-        description: 'Bike outdoors or use a stationary bike at moderate resistance.',
-        duration: 3000,
-        imageUrl: 'https://images.unsplash.com/photo-1534787238916-9ba6764efd4f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      }
-    ],
-    advanced: [
-      { 
-        id: 'ea1', 
-        name: 'Marathon Training', 
-        description: 'Long-distance running with varying intensities and distances.',
-        duration: 5400,
-        imageUrl: 'https://images.unsplash.com/photo-1527056859620-31dae403762a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      },
-      { 
-        id: 'ea2', 
-        name: 'Triathlon Training', 
-        description: 'Alternating between swimming, cycling, and running.',
-        duration: 3600,
-        imageUrl: 'https://images.unsplash.com/photo-1519311840873-5f7e9570f461?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      }
-    ]
+  {
+    id: '3',
+    name: 'Planks',
+    description: 'An isometric core exercise that improves your stability and strengthens your abdomen.',
+    duration: 30,
+    imageUrl: 'https://images.unsplash.com/photo-1566241440091-ec10de8db2e1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
   },
-  yoga: {
-    beginner: [
-      { 
-        id: 'yb1', 
-        name: 'Sun Salutation', 
-        description: 'A flowing sequence of yoga poses.',
-        sets: 3, 
-        duration: 300,
-        imageUrl: 'https://images.unsplash.com/photo-1552196563-55cd4e45efb3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      },
-      { 
-        id: 'yb2', 
-        name: 'Child\'s Pose', 
-        description: 'A resting pose that gently stretches the lower back.',
-        duration: 120,
-        imageUrl: 'https://images.unsplash.com/photo-1566838330756-b5a5f3594499?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      }
-    ],
-    intermediate: [
-      { 
-        id: 'yi1', 
-        name: 'Warrior Sequence', 
-        description: 'A series of standing poses that build strength and stability.',
-        sets: 2, 
-        duration: 300,
-        imageUrl: 'https://images.unsplash.com/photo-1575052814086-f385e2e2ad1b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      },
-      { 
-        id: 'yi2', 
-        name: 'Crow Pose', 
-        description: 'An arm balance where knees rest on the backs of your upper arms.',
-        sets: 3, 
-        duration: 30,
-        imageUrl: 'https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      }
-    ],
-    advanced: [
-      { 
-        id: 'ya1', 
-        name: 'Handstand', 
-        description: 'An inverted pose where the body is balanced on the hands.',
-        sets: 5, 
-        duration: 60,
-        imageUrl: 'https://images.unsplash.com/photo-1566940700635-8440ef4f2233?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      },
-      { 
-        id: 'ya2', 
-        name: 'Ashtanga Primary Series', 
-        description: 'A dynamic, flowing practice that synchronizes breath with movement.',
-        duration: 5400,
-        imageUrl: 'https://images.unsplash.com/photo-1532798442725-41036acc7489?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      }
-    ]
+  {
+    id: '4',
+    name: 'Burpees',
+    description: 'A full-body exercise that combines a squat, push-up, and jump, great for cardio.',
+    sets: 3,
+    reps: 10,
+    imageUrl: 'https://images.unsplash.com/photo-1593164842264-854604db2260?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
   },
-  flexibility: {
-    beginner: [
-      { 
-        id: 'fb1', 
-        name: 'Hamstring Stretch', 
-        description: 'Sit with legs extended and reach for your toes.',
-        sets: 3, 
-        duration: 30,
-        imageUrl: 'https://images.unsplash.com/photo-1581385339821-5b358673a883?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      },
-      { 
-        id: 'fb2', 
-        name: 'Shoulder Stretch', 
-        description: 'Bring one arm across your chest and use the other to hold it in place.',
-        sets: 3, 
-        duration: 30,
-        imageUrl: 'https://images.unsplash.com/photo-1581385339878-fa6b936290e1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      }
-    ],
-    intermediate: [
-      { 
-        id: 'fi1', 
-        name: 'Pigeon Pose', 
-        description: 'A hip opener that also stretches your glutes.',
-        sets: 2, 
-        duration: 60,
-        imageUrl: 'https://images.unsplash.com/photo-1575052814806-659ab5f62159?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      },
-      { 
-        id: 'fi2', 
-        name: 'Butterfly Stretch', 
-        description: 'Sit with the soles of your feet together and knees dropped to the sides.',
-        sets: 3, 
-        duration: 45,
-        imageUrl: 'https://images.unsplash.com/photo-1593164842264-990881aebcda?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      }
-    ],
-    advanced: [
-      { 
-        id: 'fa1', 
-        name: 'Full Split', 
-        description: 'Extend both legs in opposite directions until they form a straight line.',
-        sets: 3, 
-        duration: 60,
-        imageUrl: 'https://images.unsplash.com/photo-1583454110551-21f21f984ae7?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      },
-      { 
-        id: 'fa2', 
-        name: 'Backbend', 
-        description: 'From standing, arch backward until hands touch the floor.',
-        sets: 3, 
-        duration: 30,
-        imageUrl: 'https://images.unsplash.com/photo-1549576490-b0b4831ef60a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      }
-    ]
+  {
+    id: '5',
+    name: 'Lunges',
+    description: 'A unilateral exercise that works your quadriceps, hamstrings, and glutes.',
+    sets: 3,
+    reps: 12,
+    imageUrl: 'https://images.unsplash.com/photo-1534258936925-c58bed479fcb?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
   },
-  balance: {
-    beginner: [
-      { 
-        id: 'bb1', 
-        name: 'Single Leg Stand', 
-        description: 'Stand on one leg with the other foot raised slightly off the ground.',
-        sets: 2, 
-        duration: 30,
-        imageUrl: 'https://images.unsplash.com/photo-1594737625785-a6cbdabd333c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      },
-      { 
-        id: 'bb2', 
-        name: 'Heel-to-Toe Walk', 
-        description: 'Walk in a straight line placing the heel of one foot directly in front of the toes of the other foot.',
-        duration: 60,
-        imageUrl: 'https://images.unsplash.com/photo-1590739293831-5f0e971dc92c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      }
-    ],
-    intermediate: [
-      { 
-        id: 'bi1', 
-        name: 'Tree Pose', 
-        description: 'Stand on one leg with the sole of the other foot placed against the inner thigh.',
-        sets: 3, 
-        duration: 45,
-        imageUrl: 'https://images.unsplash.com/photo-1561049501-e1f96bdd98fd?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      },
-      { 
-        id: 'bi2', 
-        name: 'Standing Figure Four', 
-        description: 'Balance on one leg while the other is bent with ankle resting on the standing leg\'s thigh.',
-        sets: 3, 
-        duration: 30,
-        imageUrl: 'https://images.unsplash.com/flagged/photo-1563420577667-aaf15c8bfef6?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      }
-    ],
-    advanced: [
-      { 
-        id: 'ba1', 
-        name: 'Dancer\'s Pose', 
-        description: 'Standing on one leg, grab the other foot behind you and extend it upward while leaning forward.',
-        sets: 3, 
-        duration: 45,
-        imageUrl: 'https://images.unsplash.com/photo-1513384312027-9fa69a360337?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      },
-      { 
-        id: 'ba2', 
-        name: 'One-Legged King Pigeon Pose', 
-        description: 'From pigeon pose, bend the back leg and reach behind to grab the foot.',
-        sets: 3, 
-        duration: 30,
-        imageUrl: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
-      }
-    ]
+  {
+    id: '6',
+    name: 'Mountain Climbers',
+    description: 'A dynamic core exercise that also elevates your heart rate for cardio benefits.',
+    duration: 45,
+    imageUrl: 'https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+  },
+  {
+    id: '7',
+    name: 'Dumbbell Rows',
+    description: 'A back exercise that targets your lats, rhomboids, and biceps.',
+    sets: 3,
+    reps: 12,
+    imageUrl: 'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+  },
+  {
+    id: '8',
+    name: 'Jump Rope',
+    description: 'A cardiovascular exercise that improves coordination and burns calories.',
+    duration: 60,
+    imageUrl: 'https://images.unsplash.com/photo-1515238152791-8216bfdf89a7?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+  },
+  {
+    id: '9',
+    name: 'Bicycle Crunches',
+    description: 'A core exercise that targets your obliques and rectus abdominis.',
+    sets: 3,
+    reps: 20,
+    imageUrl: 'https://images.unsplash.com/photo-1571945153237-4929e783af4a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+  },
+  {
+    id: '10',
+    name: 'Kettlebell Swings',
+    description: 'A dynamic exercise that targets your posterior chain and provides cardiovascular benefits.',
+    sets: 3,
+    reps: 15,
+    imageUrl: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+  },
+  {
+    id: '11',
+    name: 'Yoga Downward Dog',
+    description: 'A yoga pose that stretches the hamstrings, calves, and shoulders.',
+    duration: 45,
+    imageUrl: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+  },
+  {
+    id: '12',
+    name: 'Yoga Warrior Pose',
+    description: 'A standing yoga pose that builds strength and improves focus.',
+    duration: 30,
+    imageUrl: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+  },
+  {
+    id: '13',
+    name: 'Jogging',
+    description: 'A cardiovascular exercise that improves endurance and burns calories.',
+    duration: 600,
+    imageUrl: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+  },
+  {
+    id: '14',
+    name: 'Deadlifts',
+    description: 'A compound exercise that targets your posterior chain, especially your back and hamstrings.',
+    sets: 3,
+    reps: 8,
+    imageUrl: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+  },
+  {
+    id: '15',
+    name: 'Bench Press',
+    description: 'A compound exercise that targets your chest, shoulders, and triceps.',
+    sets: 3,
+    reps: 8,
+    imageUrl: 'https://images.unsplash.com/photo-1584466977773-e625c37cdd50?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'
+  }
+];
+
+// Filter exercises based on fitness goal and available equipment
+const filterExercises = (goal: FitnessGoal, equipment: Equipment[]): Exercise[] => {
+  // In a real app, this would filter from a database based on goal and equipment
+  // For this mock, we'll return a subset of exercises based on the goal
+  switch (goal) {
+    case 'strength':
+      return exerciseDatabase.filter(e => ['1', '2', '5', '7', '10', '14', '15'].includes(e.id));
+    case 'cardio':
+      return exerciseDatabase.filter(e => ['4', '6', '8', '13'].includes(e.id));
+    case 'endurance':
+      return exerciseDatabase.filter(e => ['1', '2', '4', '8', '13'].includes(e.id));
+    case 'yoga':
+      return exerciseDatabase.filter(e => ['3', '11', '12'].includes(e.id));
+    case 'flexibility':
+      return exerciseDatabase.filter(e => ['5', '11', '12'].includes(e.id));
+    case 'balance':
+      return exerciseDatabase.filter(e => ['3', '5', '11', '12'].includes(e.id));
+    default:
+      return exerciseDatabase;
   }
 };
 
-// Workout tips based on goals
-const workoutTips: Record<FitnessGoal, string[]> = {
-  strength: [
-    "Ensure proper form to prevent injuries and maximize effectiveness.",
-    "Progressive overload is key - gradually increase weight or reps over time.",
-    "Allow 48 hours of recovery for muscle groups between strength sessions.",
-    "Protein intake is crucial for muscle repair and growth.",
-    "Compound exercises give you more bang for your buck than isolation exercises."
-  ],
-  cardio: [
-    "Warm up properly before intense cardio sessions.",
-    "Mix high and low intensity cardio for optimal heart health.",
-    "Stay hydrated during cardio workouts.",
-    "Monitor your heart rate to ensure you're in the right zone for your goals.",
-    "Consistency is more important than intensity for cardiovascular health."
-  ],
-  endurance: [
-    "Build endurance gradually to avoid injury.",
-    "Proper nutrition before long sessions is crucial for sustained energy.",
-    "Cross-training can help improve overall endurance while reducing injury risk.",
-    "Recovery is as important as training for endurance development.",
-    "Proper breathing techniques can significantly improve endurance performance."
-  ],
-  yoga: [
-    "Focus on your breath - it's the foundation of yoga practice.",
-    "Don't compare your practice to others - yoga is a personal journey.",
-    "Consistency matters more than duration - daily practice is beneficial.",
-    "Props can help make poses more accessible and beneficial.",
-    "Balance challenging poses with restorative practices for a complete practice."
-  ],
-  flexibility: [
-    "Warm up before stretching to increase blood flow to muscles.",
-    "Hold static stretches for 30 seconds to 2 minutes for best results.",
-    "Breathe deeply while stretching to help muscles relax.",
-    "Stretch regularly - ideally daily - for best improvements in flexibility.",
-    "Avoid bouncing in stretches as it can cause micro-tears in muscles."
-  ],
-  balance: [
-    "Practice balance exercises daily for consistent improvement.",
-    "A strong core is essential for better balance.",
-    "Focus your gaze on a fixed point during balance poses to help stabilize.",
-    "Barefoot training can improve proprioception and balance.",
-    "Progress gradually from stable to more unstable surfaces as your balance improves."
-  ]
+// Adjust exercise difficulty based on experience level
+const adjustForExperience = (exercises: Exercise[], level: ExperienceLevel): Exercise[] => {
+  return exercises.map(exercise => {
+    const adjusted = { ...exercise };
+    
+    // Adjust reps/sets/duration based on experience level
+    if (level === 'beginner') {
+      if (adjusted.sets) adjusted.sets = Math.max(2, adjusted.sets - 1);
+      if (adjusted.reps) adjusted.reps = Math.max(6, adjusted.reps - 4);
+      if (adjusted.duration) adjusted.duration = Math.max(20, adjusted.duration * 0.7);
+    } else if (level === 'advanced') {
+      if (adjusted.sets) adjusted.sets += 1;
+      if (adjusted.reps) adjusted.reps += 4;
+      if (adjusted.duration) adjusted.duration = adjusted.duration * 1.3;
+    }
+    
+    return adjusted;
+  });
 };
 
-// Generate a random ID
-const generateId = (): string => {
-  return Math.random().toString(36).substring(2, 15);
-};
-
-// Get random items from an array
-const getRandomItems = <T>(array: T[], count: number): T[] => {
-  const shuffled = [...array].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, count);
-};
-
-// Get days of the week
-const getDaysOfWeek = (count: number): DayOfWeek[] => {
-  const allDays: DayOfWeek[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-  return getRandomItems(allDays, count);
-};
-
-// Get a random tip based on fitness goal
-export const getRandomTip = (goal: FitnessGoal): string => {
-  const tips = workoutTips[goal];
-  return tips[Math.floor(Math.random() * tips.length)];
-};
-
-// Generate a workout plan based on user preferences
+// Generate a workout plan based on user input
 export const generateWorkoutPlan = (formData: WorkoutFormData): WorkoutPlan => {
-  const { fitnessGoal, experienceLevel, daysPerWeek } = formData;
+  const {
+    fitnessGoal,
+    experienceLevel,
+    equipment,
+    daysPerWeek,
+    focusAreas,
+    duration
+  } = formData;
   
-  // Get exercises based on goal and experience level
-  const availableExercises = exerciseDatabase[fitnessGoal][experienceLevel];
+  // Filter exercises based on goal and equipment
+  let availableExercises = filterExercises(fitnessGoal, equipment);
   
-  // Get workout days
-  const workoutDays = getDaysOfWeek(daysPerWeek);
+  // Adjust exercises for experience level
+  availableExercises = adjustForExperience(availableExercises, experienceLevel);
   
-  // Create workout plan
-  const workoutPlan: WorkoutPlan = {
-    id: generateId(),
-    name: `${experienceLevel.charAt(0).toUpperCase() + experienceLevel.slice(1)} ${fitnessGoal.charAt(0).toUpperCase() + fitnessGoal.slice(1)} Plan`,
+  // Determine workout days
+  const allDays: DayOfWeek[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const workoutDays = allDays.slice(0, daysPerWeek);
+  
+  // Create workout days with exercises
+  const days = workoutDays.map(day => {
+    // Randomly select 3-5 exercises for each day
+    const numberOfExercises = Math.floor(Math.random() * 3) + 3;
+    const shuffled = [...availableExercises].sort(() => 0.5 - Math.random());
+    const exercises = shuffled.slice(0, numberOfExercises);
+    
+    return {
+      day,
+      exercises,
+      completed: false
+    };
+  });
+  
+  // Generate plan name based on goal and level
+  const planName = `${experienceLevel.charAt(0).toUpperCase() + experienceLevel.slice(1)} ${fitnessGoal.charAt(0).toUpperCase() + fitnessGoal.slice(1)} Plan`;
+  
+  return {
+    id: `plan_${Date.now()}`,
+    name: planName,
     goal: fitnessGoal,
     level: experienceLevel,
-    days: workoutDays.map(day => {
-      // Get random exercises for this day
-      const exercises = getRandomItems(
-        availableExercises, 
-        Math.floor(Math.random() * 3) + 2 // 2-4 exercises per day
-      );
-      
-      return {
-        day,
-        exercises,
-        completed: false
-      };
-    }),
+    days,
     createdAt: new Date(),
     completionPercentage: 0
   };
-  
-  return workoutPlan;
 };
 
 // Calculate completion percentage for a workout plan
 export const calculateCompletionPercentage = (plan: WorkoutPlan): number => {
-  if (plan.days.length === 0) return 0;
-  
+  const totalDays = plan.days.length;
   const completedDays = plan.days.filter(day => day.completed).length;
-  return Math.round((completedDays / plan.days.length) * 100);
+  
+  return Math.round((completedDays / totalDays) * 100);
+};
+
+// Get a random tip based on the fitness goal
+export const getRandomTip = (goal: FitnessGoal): string => {
+  const generalTips = [
+    "Remember to stay hydrated throughout your workout.",
+    "Proper form is more important than the amount of weight lifted.",
+    "Make sure to warm up before and cool down after each workout.",
+    "Rest days are essential for muscle recovery and growth.",
+    "Consistency is key to seeing results in your fitness journey."
+  ];
+  
+  const goalSpecificTips: Record<FitnessGoal, string[]> = {
+    strength: [
+      "Progressive overload is essential for building strength - gradually increase weight or reps.",
+      "Compound exercises like squats and deadlifts give you the most bang for your buck.",
+      "Aim for 1-2 minutes of rest between strength training sets.",
+      "Protein intake is crucial for muscle repair and growth."
+    ],
+    cardio: [
+      "Mix high-intensity intervals with steady-state cardio for optimal heart health.",
+      "Find cardio activities you enjoy to stay motivated.",
+      "Morning cardio on an empty stomach can help with fat burning.",
+      "Track your heart rate to ensure you're working in the right zone."
+    ],
+    endurance: [
+      "Gradually increase duration before intensity for endurance training.",
+      "Proper breathing techniques can improve your endurance performance.",
+      "Carbohydrates are your primary fuel source for endurance activities.",
+      "Cross-training can help prevent overuse injuries in endurance athletes."
+    ],
+    yoga: [
+      "Focus on your breath - it's the foundation of yoga practice.",
+      "Don't compare your practice to others - yoga is a personal journey.",
+      "Consistency matters more than duration in yoga practice.",
+      "Use props like blocks and straps to help you achieve proper alignment."
+    ],
+    flexibility: [
+      "Hold static stretches for 20-30 seconds to effectively improve flexibility.",
+      "Warm muscles stretch more effectively than cold ones.",
+      "Dynamic stretching is best before workouts, static stretching after.",
+      "Stretching should never cause pain - ease into positions gradually."
+    ],
+    balance: [
+      "Try practicing balance exercises barefoot to strengthen foot muscles.",
+      "Focus your gaze on a fixed point to help maintain balance.",
+      "Core strength is fundamental to good balance.",
+      "Challenge yourself with unstable surfaces as your balance improves."
+    ]
+  };
+  
+  // Select from both general tips and goal-specific tips
+  const allTips = [...generalTips, ...goalSpecificTips[goal]];
+  const randomIndex = Math.floor(Math.random() * allTips.length);
+  
+  return allTips[randomIndex];
 };

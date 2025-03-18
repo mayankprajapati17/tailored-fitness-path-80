@@ -6,6 +6,8 @@ import WorkoutPlan from '../components/WorkoutPlan';
 import Notification from '../components/Notification';
 import { WorkoutFormData, WorkoutPlan as WorkoutPlanType, Notification as NotificationType } from '../types';
 import { generateWorkoutPlan, getRandomTip } from '../utils/workoutGenerator';
+import { Button } from '../components/ui/button';
+import { PlusCircle } from 'lucide-react';
 
 const Index = () => {
   const [workoutPlan, setWorkoutPlan] = useState<WorkoutPlanType | null>(null);
@@ -135,14 +137,16 @@ const Index = () => {
           ) : (
             <div>
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-medium">Your Workout Plan</h2>
+                <h2 className="text-2xl font-display font-medium">Your Workout Plan</h2>
                 
-                <button
+                <Button
                   onClick={() => setWorkoutPlan(null)}
-                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                  variant="outline"
+                  className="text-sm font-medium"
                 >
+                  <PlusCircle className="w-4 h-4 mr-2" />
                   Create New Plan
-                </button>
+                </Button>
               </div>
               
               <WorkoutPlan plan={workoutPlan} onUpdate={handlePlanUpdate} />

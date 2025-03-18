@@ -1,6 +1,8 @@
 
 import { useState } from 'react';
 import { WorkoutFormData, FitnessGoal, ExperienceLevel, Equipment } from '../types';
+import { Button } from "@/components/ui/button";
+import { Play } from 'lucide-react';
 
 interface WorkoutFormProps {
   onSubmit: (formData: WorkoutFormData) => void;
@@ -104,7 +106,7 @@ const WorkoutForm = ({ onSubmit, isLoading = false }: WorkoutFormProps) => {
       onSubmit={handleSubmit} 
       className="bg-white dark:bg-card rounded-xl border border-border p-6 shadow-sm animate-fade-in"
     >
-      <h2 className="text-xl font-medium mb-6">Create Your Workout Plan</h2>
+      <h2 className="text-xl font-display font-medium mb-6">Create Your Workout Plan</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Fitness Goal */}
@@ -160,7 +162,7 @@ const WorkoutForm = ({ onSubmit, isLoading = false }: WorkoutFormProps) => {
             max="7"
             value={formData.daysPerWeek}
             onChange={handleChange}
-            className="w-full"
+            className="w-full accent-primary"
           />
           <div className="flex justify-between text-xs text-muted-foreground">
             <span>1</span>
@@ -190,7 +192,7 @@ const WorkoutForm = ({ onSubmit, isLoading = false }: WorkoutFormProps) => {
             step="5"
             value={formData.duration}
             onChange={handleChange}
-            className="w-full"
+            className="w-full accent-primary"
           />
           <div className="flex justify-between text-xs text-muted-foreground">
             <span>15m</span>
@@ -257,13 +259,20 @@ const WorkoutForm = ({ onSubmit, isLoading = false }: WorkoutFormProps) => {
       </div>
       
       <div className="mt-8 flex justify-end">
-        <button
+        <Button 
           type="submit"
           disabled={isLoading}
-          className="bg-primary text-white font-medium rounded-lg px-6 py-2.5 shadow-sm hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-70 disabled:pointer-events-none"
+          className="font-medium rounded-lg px-6 py-2.5 hover:bg-primary/90 transition-colors"
         >
-          {isLoading ? 'Generating...' : 'Generate Workout Plan'}
-        </button>
+          {isLoading ? (
+            'Generating...'
+          ) : (
+            <>
+              <Play className="w-4 h-4 mr-2" />
+              Generate Workout Plan
+            </>
+          )}
+        </Button>
       </div>
     </form>
   );
