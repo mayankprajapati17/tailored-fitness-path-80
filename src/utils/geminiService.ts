@@ -68,9 +68,18 @@ const formatWorkoutPrompt = (formData: WorkoutFormData): string => {
   const focusAreasStr = focusAreas.length > 0 ? focusAreas.join(', ') : 'full body';
 
   return `
-Generate a ${daysPerWeek}-day workout plan for a ${experienceLevel} level person focusing on ${fitnessGoal} with the following equipment: ${equipmentStr}.
+Generate a detailed ${daysPerWeek}-day workout plan for a ${experienceLevel} level person focusing on ${fitnessGoal} with the following equipment: ${equipmentStr}.
 The person wants to focus on these areas: ${focusAreasStr}.
 Each workout should last approximately ${duration} minutes.
+
+For each exercise, provide:
+1. A descriptive name
+2. A brief explanation of how to perform it
+3. Number of sets and reps (or duration in seconds for timed exercises)
+4. Required equipment (or specify "bodyweight" if none needed)
+5. Which body part it targets
+
+Be specific and provide exercises that are appropriate for the ${experienceLevel} level and will help achieve the ${fitnessGoal} goal.
 
 Return ONLY a JSON object with the following structure:
 {
@@ -82,11 +91,11 @@ Return ONLY a JSON object with the following structure:
         {
           "id": "1",
           "name": "Exercise Name",
-          "description": "Brief description of the exercise",
+          "description": "Brief description of the exercise and how to perform it",
           "sets": 3,
           "reps": 10,
           "duration": null,
-          "equipment": "equipment type or null if bodyweight"
+          "equipment": "equipment type or 'none' if bodyweight"
         }
       ]
     }

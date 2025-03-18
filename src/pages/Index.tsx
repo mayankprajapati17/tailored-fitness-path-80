@@ -88,13 +88,13 @@ const Index = () => {
       // Show success notification
       toast({
         title: "Success!",
-        description: "Your workout plan has been generated using Gemini AI.",
+        description: "Your personalized workout plan has been generated with AI.",
         variant: "default",
       });
       
       addNotification({
         id: `success-${Date.now()}`,
-        message: 'Your workout plan has been generated using Gemini AI!',
+        message: 'Your personalized workout plan has been created using Gemini AI!',
         type: 'success',
         read: false
       });
