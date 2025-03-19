@@ -1,8 +1,12 @@
 
 import { useState } from 'react';
 import { WorkoutFormData, FitnessGoal, ExperienceLevel, Equipment } from '../types';
-import { Button } from "@/components/ui/button";
+import { Button } from "@progress/kendo-react-buttons";
 import { Play } from 'lucide-react';
+import { DropDownList } from '@progress/kendo-react-dropdowns';
+import { Slider } from '@progress/kendo-react-inputs';
+import { Switch } from '@progress/kendo-react-inputs';
+import { DatePicker } from '@progress/kendo-react-dateinputs';
 
 interface WorkoutFormProps {
   onSubmit: (formData: WorkoutFormData) => void;
@@ -19,19 +23,22 @@ const WorkoutForm = ({ onSubmit, isLoading = false }: WorkoutFormProps) => {
     duration: 30
   });
   
-  const fitnessGoals: { value: FitnessGoal; label: string }[] = [
-    { value: 'strength', label: 'Strength' },
-    { value: 'cardio', label: 'Cardio' },
-    { value: 'endurance', label: 'Endurance' },
-    { value: 'yoga', label: 'Yoga' },
-    { value: 'flexibility', label: 'Flexibility' },
-    { value: 'balance', label: 'Balance' }
+  const [startDate, setStartDate] = useState<Date>(new Date());
+  const [reminders, setReminders] = useState<boolean>(false);
+  
+  const fitnessGoals = [
+    { text: 'Strength', value: 'strength' },
+    { text: 'Cardio', value: 'cardio' },
+    { text: 'Endurance', value: 'endurance' },
+    { text: 'Yoga', value: 'yoga' },
+    { text: 'Flexibility', value: 'flexibility' },
+    { text: 'Balance', value: 'balance' }
   ];
   
-  const experienceLevels: { value: ExperienceLevel; label: string }[] = [
-    { value: 'beginner', label: 'Beginner' },
-    { value: 'intermediate', label: 'Intermediate' },
-    { value: 'advanced', label: 'Advanced' }
+  const experienceLevels = [
+    { text: 'Beginner', value: 'beginner' },
+    { text: 'Intermediate', value: 'intermediate' },
+    { text: 'Advanced', value: 'advanced' }
   ];
   
   const equipmentOptions: { value: Equipment; label: string }[] = [
@@ -50,49 +57,53 @@ const WorkoutForm = ({ onSubmit, isLoading = false }: WorkoutFormProps) => {
     { value: 'mobility', label: 'Mobility' }
   ];
   
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
-    const { name, value, type } = e.target;
+  const handleDropDownChange = (e: any, field: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: e.value
+    }));
+  };
+  
+  const handleSliderChange = (e: any, field: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: e.value
+    }));
+  };
+  
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, checked } = e.target;
     
-    if (type === 'checkbox') {
-      const checkbox = e.target as HTMLInputElement;
-      const { checked } = checkbox;
-      
-      if (name === 'focusAreas') {
-        setFormData(prev => {
-          const currentFocusAreas = [...prev.focusAreas];
-          
-          if (checked) {
-            currentFocusAreas.push(value);
-          } else {
-            const index = currentFocusAreas.indexOf(value);
-            if (index > -1) {
-              currentFocusAreas.splice(index, 1);
-            }
+    if (name === 'focusAreas') {
+      setFormData(prev => {
+        const currentFocusAreas = [...prev.focusAreas];
+        
+        if (checked) {
+          currentFocusAreas.push(value);
+        } else {
+          const index = currentFocusAreas.indexOf(value);
+          if (index > -1) {
+            currentFocusAreas.splice(index, 1);
           }
-          
-          return { ...prev, focusAreas: currentFocusAreas };
-        });
-      } else if (name === 'equipment') {
-        setFormData(prev => {
-          const currentEquipment = [...prev.equipment];
-          
-          if (checked) {
-            currentEquipment.push(value as Equipment);
-          } else {
-            const index = currentEquipment.indexOf(value as Equipment);
-            if (index > -1) {
-              currentEquipment.splice(index, 1);
-            }
+        }
+        
+        return { ...prev, focusAreas: currentFocusAreas };
+      });
+    } else if (name === 'equipment') {
+      setFormData(prev => {
+        const currentEquipment = [...prev.equipment];
+        
+        if (checked) {
+          currentEquipment.push(value as Equipment);
+        } else {
+          const index = currentEquipment.indexOf(value as Equipment);
+          if (index > -1) {
+            currentEquipment.splice(index, 1);
           }
-          
-          return { ...prev, equipment: currentEquipment };
-        });
-      }
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: ['daysPerWeek', 'duration'].includes(name) ? Number(value) : value
-      }));
+        }
+        
+        return { ...prev, equipment: currentEquipment };
+      });
     }
   };
   
@@ -109,99 +120,98 @@ const WorkoutForm = ({ onSubmit, isLoading = false }: WorkoutFormProps) => {
       <h2 className="text-xl font-display font-medium mb-6">Create Your Workout Plan</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Fitness Goal */}
+        {/* Fitness Goal - using KendoReact DropDownList */}
         <div className="space-y-2">
           <label htmlFor="fitnessGoal" className="block text-sm font-medium text-foreground">
             Fitness Goal
           </label>
-          <select
-            id="fitnessGoal"
-            name="fitnessGoal"
-            value={formData.fitnessGoal}
-            onChange={handleChange}
-            className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-          >
-            {fitnessGoals.map(goal => (
-              <option key={goal.value} value={goal.value}>
-                {goal.label}
-              </option>
-            ))}
-          </select>
+          <DropDownList
+            data={fitnessGoals}
+            textField="text"
+            dataItemKey="value"
+            value={fitnessGoals.find(g => g.value === formData.fitnessGoal)}
+            onChange={(e) => handleDropDownChange(e, 'fitnessGoal')}
+            className="w-full rounded-md"
+          />
         </div>
         
-        {/* Experience Level */}
+        {/* Experience Level - using KendoReact DropDownList */}
         <div className="space-y-2">
           <label htmlFor="experienceLevel" className="block text-sm font-medium text-foreground">
             Experience Level
           </label>
-          <select
-            id="experienceLevel"
-            name="experienceLevel"
-            value={formData.experienceLevel}
-            onChange={handleChange}
-            className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-          >
-            {experienceLevels.map(level => (
-              <option key={level.value} value={level.value}>
-                {level.label}
-              </option>
-            ))}
-          </select>
+          <DropDownList
+            data={experienceLevels}
+            textField="text"
+            dataItemKey="value"
+            value={experienceLevels.find(l => l.value === formData.experienceLevel)}
+            onChange={(e) => handleDropDownChange(e, 'experienceLevel')}
+            className="w-full rounded-md"
+          />
         </div>
         
-        {/* Days Per Week */}
+        {/* Start Date - using KendoReact DatePicker */}
+        <div className="space-y-2">
+          <label htmlFor="startDate" className="block text-sm font-medium text-foreground">
+            Start Date
+          </label>
+          <DatePicker
+            value={startDate}
+            onChange={(e) => setStartDate(e.value || new Date())}
+            format="MMMM d, yyyy"
+            className="w-full"
+          />
+        </div>
+        
+        {/* Reminders - using KendoReact Switch */}
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-foreground">
+            Enable Workout Reminders
+          </label>
+          <div className="flex items-center space-x-2">
+            <Switch
+              checked={reminders}
+              onChange={(e) => setReminders(e.value)}
+              onLabel="On"
+              offLabel="Off"
+            />
+            <span className="text-sm text-muted-foreground">
+              {reminders ? 'You will receive workout reminders' : 'No reminders will be sent'}
+            </span>
+          </div>
+        </div>
+        
+        {/* Days Per Week - using KendoReact Slider */}
         <div className="space-y-2">
           <label htmlFor="daysPerWeek" className="block text-sm font-medium text-foreground">
             Days Per Week
           </label>
-          <input
-            type="range"
-            id="daysPerWeek"
-            name="daysPerWeek"
-            min="1"
-            max="7"
+          <Slider
+            min={1}
+            max={7}
+            step={1}
             value={formData.daysPerWeek}
-            onChange={handleChange}
-            className="w-full accent-primary"
+            onChange={(e) => handleSliderChange(e, 'daysPerWeek')}
+            className="w-full"
           />
-          <div className="flex justify-between text-xs text-muted-foreground">
-            <span>1</span>
-            <span>2</span>
-            <span>3</span>
-            <span>4</span>
-            <span>5</span>
-            <span>6</span>
-            <span>7</span>
-          </div>
           <p className="text-sm text-center mt-1">
             <span className="font-medium">{formData.daysPerWeek}</span> days per week
           </p>
         </div>
         
-        {/* Workout Duration */}
+        {/* Workout Duration - using KendoReact Slider */}
         <div className="space-y-2">
           <label htmlFor="duration" className="block text-sm font-medium text-foreground">
             Workout Duration
           </label>
-          <input
-            type="range"
-            id="duration"
-            name="duration"
-            min="15"
-            max="90"
-            step="5"
+          <Slider
+            min={15}
+            max={90}
+            step={5}
             value={formData.duration}
-            onChange={handleChange}
-            className="w-full accent-primary"
+            onChange={(e) => handleSliderChange(e, 'duration')}
+            className="w-full"
           />
-          <div className="flex justify-between text-xs text-muted-foreground">
-            <span>15m</span>
-            <span>30m</span>
-            <span>45m</span>
-            <span>60m</span>
-            <span>75m</span>
-            <span>90m</span>
-          </div>
           <p className="text-sm text-center mt-1">
             <span className="font-medium">{formData.duration}</span> minutes per workout
           </p>
@@ -224,7 +234,7 @@ const WorkoutForm = ({ onSubmit, isLoading = false }: WorkoutFormProps) => {
                 name="equipment"
                 value={option.value}
                 checked={formData.equipment.includes(option.value)}
-                onChange={handleChange}
+                onChange={handleCheckboxChange}
                 className="rounded border-input h-4 w-4 text-primary focus:ring-primary"
               />
               <span>{option.label}</span>
@@ -249,7 +259,7 @@ const WorkoutForm = ({ onSubmit, isLoading = false }: WorkoutFormProps) => {
                 name="focusAreas"
                 value={area.value}
                 checked={formData.focusAreas.includes(area.value)}
-                onChange={handleChange}
+                onChange={handleCheckboxChange}
                 className="rounded border-input h-4 w-4 text-primary focus:ring-primary"
               />
               <span>{area.label}</span>
@@ -260,18 +270,15 @@ const WorkoutForm = ({ onSubmit, isLoading = false }: WorkoutFormProps) => {
       
       <div className="mt-8 flex justify-end">
         <Button 
+          themeColor="primary"
+          fillMode="solid"
+          size="medium"
           type="submit"
           disabled={isLoading}
+          icon="play"
           className="font-medium rounded-lg px-6 py-2.5 hover:bg-primary/90 transition-colors"
         >
-          {isLoading ? (
-            'Generating...'
-          ) : (
-            <>
-              <Play className="w-4 h-4 mr-2" />
-              Generate Workout Plan
-            </>
-          )}
+          {isLoading ? 'Generating...' : 'Generate Workout Plan'}
         </Button>
       </div>
     </form>

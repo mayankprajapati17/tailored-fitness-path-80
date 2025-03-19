@@ -1,9 +1,11 @@
+
 import { useState } from 'react';
-import { WorkoutPlan as WorkoutPlanType, WorkoutDay, FitnessGoal } from '../types';
+import { WorkoutPlan as WorkoutPlanType, WorkoutDay, FitnessGoal, Exercise } from '../types';
 import WorkoutCard from './WorkoutCard';
 import ProgressBar from './ProgressBar';
 import { calculateCompletionPercentage } from '../utils/workoutGenerator';
-import { Button } from '@/components/ui/button';
+import { Button } from '@progress/kendo-react-buttons';
+import { Grid, GridColumn } from '@progress/kendo-react-grid';
 import { Share2, Edit, Trophy, DumbbellIcon } from 'lucide-react';
 
 interface WorkoutPlanProps {
@@ -22,6 +24,7 @@ const workoutTypeHeaders: Record<FitnessGoal, string> = {
 
 const WorkoutPlan = ({ plan, onUpdate }: WorkoutPlanProps) => {
   const [selectedDay, setSelectedDay] = useState<WorkoutDay>(plan.days[0]);
+  const [gridView, setGridView] = useState<boolean>(false);
   
   const handleDayCompletion = (day: WorkoutDay) => {
     const updatedDays = plan.days.map(d => 
@@ -38,6 +41,23 @@ const WorkoutPlan = ({ plan, onUpdate }: WorkoutPlanProps) => {
   };
   
   const handleExerciseComplete = () => {
+  };
+
+  const StatusCell = (props: any) => {
+    const data = props.dataItem;
+    return (
+      <td>
+        {data.completed ? (
+          <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">
+            Complete
+          </span>
+        ) : (
+          <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-700">
+            Pending
+          </span>
+        )}
+      </td>
+    );
   };
 
   const headerImage = workoutTypeHeaders[plan.goal] || workoutTypeHeaders.strength;
@@ -87,11 +107,21 @@ const WorkoutPlan = ({ plan, onUpdate }: WorkoutPlanProps) => {
           </div>
           
           <div className="flex items-center space-x-2">
-            <Button variant="outline" size="sm">
+            <Button
+              fillMode="outline"
+              themeColor="base"
+              size="small"
+              icon="edit"
+            >
               <Edit className="w-4 h-4 mr-2" />
               Edit
             </Button>
-            <Button variant="outline" size="sm">
+            <Button
+              fillMode="outline"
+              themeColor="base"
+              size="small"
+              icon="share"
+            >
               <Share2 className="w-4 h-4 mr-2" />
               Share
             </Button>
@@ -118,9 +148,9 @@ const WorkoutPlan = ({ plan, onUpdate }: WorkoutPlanProps) => {
             <ul>
               {plan.days.map(day => (
                 <li key={day.day} className="mb-1 last:mb-0">
-                  <button
+                  <div
                     onClick={() => setSelectedDay(day)}
-                    className={`flex justify-between items-center w-full px-4 py-3 rounded-lg text-left transition-colors ${
+                    className={`flex justify-between items-center w-full px-4 py-3 rounded-lg text-left transition-colors cursor-pointer ${
                       selectedDay.day === day.day
                         ? 'bg-primary text-primary-foreground'
                         : 'hover:bg-secondary'
@@ -131,7 +161,7 @@ const WorkoutPlan = ({ plan, onUpdate }: WorkoutPlanProps) => {
                     <div className="flex items-center space-x-2">
                       <span className="text-xs">{day.exercises.length} exercises</span>
                       
-                      <button
+                      <div
                         onClick={(e) => {
                           e.stopPropagation();
                           handleDayCompletion(day);
@@ -154,9 +184,9 @@ const WorkoutPlan = ({ plan, onUpdate }: WorkoutPlanProps) => {
                           </svg>
                         )}
                         <span className="sr-only">{day.completed ? 'Mark as incomplete' : 'Mark as complete'}</span>
-                      </button>
+                      </div>
                     </div>
-                  </button>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -164,26 +194,51 @@ const WorkoutPlan = ({ plan, onUpdate }: WorkoutPlanProps) => {
         </div>
         
         <div className="flex-1 p-6">
-          <h3 className="text-lg font-display font-medium mb-4">
-            {selectedDay.day}'s Exercises
-            {selectedDay.completed && (
-              <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700 ml-2">
-                Completed
-              </span>
-            )}
-          </h3>
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-display font-medium">
+              {selectedDay.day}'s Exercises
+              {selectedDay.completed && (
+                <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700 ml-2">
+                  Completed
+                </span>
+              )}
+            </h3>
+            
+            <Button
+              fillMode="flat"
+              themeColor="primary"
+              size="small"
+              onClick={() => setGridView(!gridView)}
+            >
+              {gridView ? "Card View" : "Table View"}
+            </Button>
+          </div>
           
           {selectedDay.exercises.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {selectedDay.exercises.map((exercise, index) => (
-                <WorkoutCard
-                  key={exercise.id}
-                  exercise={exercise}
-                  onComplete={handleExerciseComplete}
-                  isLast={index === selectedDay.exercises.length - 1}
-                />
-              ))}
-            </div>
+            gridView ? (
+              <Grid 
+                data={selectedDay.exercises} 
+                style={{ height: '400px' }}
+              >
+                <GridColumn field="name" title="Exercise" width="200px" />
+                <GridColumn field="sets" title="Sets" width="80px" />
+                <GridColumn field="reps" title="Reps" width="80px" />
+                <GridColumn field="duration" title="Duration" width="100px" />
+                <GridColumn field="completed" title="Status" cell={StatusCell} width="100px" />
+                <GridColumn field="description" title="Description" />
+              </Grid>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {selectedDay.exercises.map((exercise, index) => (
+                  <WorkoutCard
+                    key={exercise.id}
+                    exercise={exercise}
+                    onComplete={handleExerciseComplete}
+                    isLast={index === selectedDay.exercises.length - 1}
+                  />
+                ))}
+              </div>
+            )
           ) : (
             <div className="text-center py-8">
               <p className="text-muted-foreground">No exercises for this day</p>

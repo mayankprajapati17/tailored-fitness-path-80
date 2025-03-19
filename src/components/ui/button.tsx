@@ -51,7 +51,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                       
     const buttonAppearance = variant === 'outline' ? 'outline' : 
                             variant === 'ghost' ? 'flat' : 
-                            variant === 'link' ? 'none' : 'solid';
+                            variant === 'link' ? 'link' : 'solid';
     
     return (
       <KendoButton
