@@ -1,4 +1,8 @@
+
 import { useState, useEffect } from 'react';
+import { IntlProvider } from '@progress/kendo-react-intl';
+import { Button } from '@progress/kendo-react-buttons';
+import { PlusCircle } from 'lucide-react';
 import Header from '../components/Header';
 import WorkoutForm from '../components/WorkoutForm';
 import WorkoutPlan from '../components/WorkoutPlan';
@@ -7,10 +11,7 @@ import { WorkoutFormData, WorkoutPlan as WorkoutPlanType, Notification as Notifi
 import { generateWorkoutPlan } from '../utils/workoutGenerator';
 import { generateWorkoutPlanWithGemini } from '../utils/geminiService';
 import { getRandomTip } from '../utils/workoutGenerator';
-import { Button } from '../components/ui/button';
-import { PlusCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { IntlProvider } from '@progress/kendo-react-intl';
 
 const Index = () => {
   const [workoutPlan, setWorkoutPlan] = useState<WorkoutPlanType | null>(null);
@@ -149,8 +150,10 @@ const Index = () => {
                   
                   <Button
                     onClick={() => setWorkoutPlan(null)}
-                    variant="outline"
-                    kendoStyle={true}
+                    themeColor="base"
+                    fillMode="outline"
+                    size="medium"
+                    icon="plus-circle"
                   >
                     <PlusCircle className="w-4 h-4 mr-2" />
                     Create New Plan
