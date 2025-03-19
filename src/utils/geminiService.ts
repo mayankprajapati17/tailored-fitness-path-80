@@ -1,4 +1,3 @@
-
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { WorkoutFormData, WorkoutPlan, Exercise, DayOfWeek } from '../types';
 import { generateWorkoutPlan as generateMockWorkoutPlan } from './workoutGenerator';
@@ -200,7 +199,7 @@ const getDefaultImageForExercise = (exerciseName: string): string => {
     return 'https://images.unsplash.com/photo-1571945153237-4929e783af4a';
   } else if (name.includes('kettlebell') || name.includes('swing')) {
     return 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438';
-  } else if (name.includes('yoga') || name.includes('downward')) {
+  } else if (name.includes('yoga') || name.includes('downward') || name.includes('child')) {
     return 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b';
   } else if (name.includes('warrior')) {
     return 'https://images.unsplash.com/photo-1506126613408-eca07ce68773';
@@ -210,6 +209,20 @@ const getDefaultImageForExercise = (exerciseName: string): string => {
     return 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48';
   } else if (name.includes('bench') || name.includes('press')) {
     return 'https://images.unsplash.com/photo-1584466977773-e625c37cdd50';
+  } else if (name.includes('chin-up') || name.includes('chin up') || name.includes('pull-up')) {
+    return 'https://images.unsplash.com/photo-1598971639058-fab3c3109a00';
+  } else if (name.includes('clean')) {
+    return 'https://images.unsplash.com/photo-1599058917765-a780eda07a3e';
+  } else if (name.includes('shoulder')) {
+    return 'https://images.unsplash.com/photo-1576678927484-cc907957088c';
+  } else if (name.includes('stair')) {
+    return 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e';
+  } else if (name.includes('walk')) {
+    return 'https://images.unsplash.com/photo-1538905386984-014adcf4df34';
+  } else if (name.includes('swim')) {
+    return 'https://images.unsplash.com/photo-1530549387789-4c1017266635';
+  } else if (name.includes('tree')) {
+    return 'https://images.unsplash.com/photo-1506126613408-eca07ce68773';
   }
   
   // Default image if no match is found

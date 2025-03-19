@@ -138,6 +138,133 @@ const exerciseDatabase: Exercise[] = [
     reps: 8,
     equipment: 'gym',
     imageUrl: 'https://images.unsplash.com/photo-1584466977773-e625c37cdd50'
+  },
+  {
+    id: '16',
+    name: 'Lunges',
+    description: 'Step forward with one leg, lowering your hips until both knees are bent at about a 90-degree angle.',
+    sets: 3,
+    reps: 12,
+    equipment: 'none',
+    imageUrl: 'https://images.unsplash.com/photo-1534258936925-c58bed479fcb'
+  },
+  {
+    id: '17',
+    name: 'Sit-ups',
+    description: 'Lie on your back with knees bent, feet flat on the floor. Curl your upper body towards your knees.',
+    sets: 3,
+    reps: 15,
+    equipment: 'none',
+    imageUrl: 'https://images.unsplash.com/photo-1571945153237-4929e783af4a'
+  },
+  {
+    id: '18',
+    name: 'Dumbbell Rows',
+    description: 'Bend at waist with one knee and hand on bench, pull dumbbell to hip while keeping back flat.',
+    sets: 3,
+    reps: 10,
+    equipment: 'dumbbells',
+    imageUrl: 'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61'
+  },
+  {
+    id: '19',
+    name: 'Shoulder Press',
+    description: 'Stand with dumbbells at shoulder height, palms forward. Press weights overhead until arms are extended.',
+    sets: 3,
+    reps: 10,
+    equipment: 'dumbbells',
+    imageUrl: 'https://images.unsplash.com/photo-1576678927484-cc907957088c'
+  },
+  {
+    id: '20',
+    name: 'Barbell Squat',
+    description: 'Rest barbell on upper back, feet shoulder-width apart. Squat down until thighs are parallel to floor.',
+    sets: 3,
+    reps: 8,
+    equipment: 'gym',
+    imageUrl: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48'
+  },
+  {
+    id: '21',
+    name: 'Power Clean',
+    description: 'Explosively lift barbell from floor to shoulders in one fluid motion, dropping under the bar.',
+    sets: 3,
+    reps: 6,
+    equipment: 'gym',
+    imageUrl: 'https://images.unsplash.com/photo-1599058917765-a780eda07a3e'
+  },
+  {
+    id: '22',
+    name: 'Chin-ups',
+    description: 'Hang from bar with palms facing you, pull body up until chin clears the bar.',
+    sets: 3,
+    reps: 8,
+    equipment: 'gym',
+    imageUrl: 'https://images.unsplash.com/photo-1598971639058-fab3c3109a00'
+  },
+  {
+    id: '23',
+    name: 'Jump Rope',
+    description: 'Swing rope over head and under feet, jumping slightly to allow rope to pass.',
+    duration: 180,
+    equipment: 'none',
+    imageUrl: 'https://images.unsplash.com/photo-1515238152791-8216bfdf89a7'
+  },
+  {
+    id: '24',
+    name: 'Running',
+    description: 'Run at a moderate to fast pace, maintaining good posture with shoulders relaxed.',
+    duration: 1200,
+    equipment: 'none',
+    imageUrl: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8'
+  },
+  {
+    id: '25',
+    name: 'Stair Climbing',
+    description: 'Climb stairs quickly, pushing through the heel of your foot and using arms for momentum.',
+    duration: 300,
+    equipment: 'none',
+    imageUrl: 'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e'
+  },
+  {
+    id: '26',
+    name: 'Brisk Walking',
+    description: 'Walk at a pace fast enough to raise your heart rate, with arms swinging naturally.',
+    duration: 1500,
+    equipment: 'none',
+    imageUrl: 'https://images.unsplash.com/photo-1538905386984-014adcf4df34'
+  },
+  {
+    id: '27',
+    name: 'Swimming',
+    description: 'Move through water using freestyle stroke, keeping body horizontal and rotating with each arm stroke.',
+    duration: 900,
+    equipment: 'none',
+    imageUrl: 'https://images.unsplash.com/photo-1530549387789-4c1017266635'
+  },
+  {
+    id: '28',
+    name: 'Tree Pose',
+    description: 'Balance on one leg with the other foot pressed against inner thigh, hands in prayer position.',
+    duration: 45,
+    equipment: 'none',
+    imageUrl: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773'
+  },
+  {
+    id: '29',
+    name: 'Child\'s Pose',
+    description: 'Kneel and sit back on heels, extend arms forward with forehead resting on the floor for a gentle stretch.',
+    duration: 60,
+    equipment: 'none',
+    imageUrl: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b'
+  },
+  {
+    id: '30',
+    name: 'Warrior II',
+    description: 'Stand with legs wide apart, one leg straight and one bent, arms extended parallel to the floor.',
+    duration: 60,
+    equipment: 'none',
+    imageUrl: 'https://images.unsplash.com/photo-1575052814086-f385e2e2ad1b'
   }
 ];
 
@@ -147,22 +274,40 @@ const filterExercises = (goal: FitnessGoal, equipment: Equipment[]): Exercise[] 
   let filteredByGoal: Exercise[];
   switch (goal) {
     case 'strength':
-      filteredByGoal = exerciseDatabase.filter(e => ['1', '2', '5', '7', '10', '14', '15'].includes(e.id));
+      filteredByGoal = exerciseDatabase.filter(e => [
+        '1', '2', '5', '7', '10', '14', '15',  // Original strength exercises
+        '16', '17', '18', '19', '20', '21', '22'  // New strength exercises
+      ].includes(e.id));
       break;
     case 'cardio':
-      filteredByGoal = exerciseDatabase.filter(e => ['4', '6', '8', '13'].includes(e.id));
+      filteredByGoal = exerciseDatabase.filter(e => [
+        '4', '6', '8', '13',  // Original cardio exercises
+        '23', '24', '25'  // New cardio exercises
+      ].includes(e.id));
       break;
     case 'endurance':
-      filteredByGoal = exerciseDatabase.filter(e => ['1', '2', '4', '8', '13'].includes(e.id));
+      filteredByGoal = exerciseDatabase.filter(e => [
+        '1', '2', '4', '8', '13',  // Original endurance exercises
+        '23', '24', '25', '26', '27'  // New endurance exercises
+      ].includes(e.id));
       break;
     case 'yoga':
-      filteredByGoal = exerciseDatabase.filter(e => ['3', '11', '12'].includes(e.id));
+      filteredByGoal = exerciseDatabase.filter(e => [
+        '3', '11', '12',  // Original yoga exercises
+        '28', '29', '30'  // New yoga exercises
+      ].includes(e.id));
       break;
     case 'flexibility':
-      filteredByGoal = exerciseDatabase.filter(e => ['5', '11', '12'].includes(e.id));
+      filteredByGoal = exerciseDatabase.filter(e => [
+        '5', '11', '12',  // Original flexibility exercises
+        '16', '28', '29', '30'  // New flexibility exercises
+      ].includes(e.id));
       break;
     case 'balance':
-      filteredByGoal = exerciseDatabase.filter(e => ['3', '5', '11', '12'].includes(e.id));
+      filteredByGoal = exerciseDatabase.filter(e => [
+        '3', '5', '11', '12',  // Original balance exercises
+        '28', '30'  // New balance exercises
+      ].includes(e.id));
       break;
     default:
       filteredByGoal = exerciseDatabase;
