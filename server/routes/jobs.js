@@ -6,14 +6,16 @@
 const express = require('express');
 const router = express.Router();
 const Job = require('../models/Job');
+const { protect } = require('../middleware/auth');
 
 /**
  * GET /api/jobs
- * Retrieve all job applications
+ * Retrieve all job applications for the authenticated user
+ * Protected route
  */
-router.get('/', async (req, res, next) => {
+router.get('/', protect, async (req, res, next) => {
   try {
-    // Get all jobs, sorted by date (newest first)
+    // Get all jobs for the current user, sorted by date (newest first)
     const jobs = await Job.find().sort({ date: -1 });
     res.json(jobs);
   } catch (error) {
@@ -24,8 +26,9 @@ router.get('/', async (req, res, next) => {
 /**
  * POST /api/jobs
  * Create a new job application
+ * Protected route
  */
-router.post('/', async (req, res, next) => {
+router.post('/', protect, async (req, res, next) => {
   try {
     // Create a new job with request body
     const newJob = new Job(req.body);
@@ -47,8 +50,9 @@ router.post('/', async (req, res, next) => {
 /**
  * PUT /api/jobs/:id
  * Update a job application
+ * Protected route
  */
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', protect, async (req, res, next) => {
   try {
     // Find and update the job by ID
     const updatedJob = await Job.findByIdAndUpdate(
@@ -85,8 +89,9 @@ router.put('/:id', async (req, res, next) => {
 /**
  * DELETE /api/jobs/:id
  * Delete a job application
+ * Protected route
  */
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', protect, async (req, res, next) => {
   try {
     // Find and delete the job by ID
     const deletedJob = await Job.findByIdAndDelete(req.params.id);
