@@ -1,30 +1,25 @@
 
 import { useState, useEffect } from 'react';
-import { IntlProvider } from '@progress/kendo-react-intl';
-import { Button } from '@progress/kendo-react-buttons';
-import { PlusCircle } from 'lucide-react';
 import Header from '../components/Header';
 import WorkoutForm from '../components/WorkoutForm';
 import WorkoutPlan from '../components/WorkoutPlan';
 import Notification from '../components/Notification';
 import { WorkoutFormData, WorkoutPlan as WorkoutPlanType, Notification as NotificationType } from '../types';
-import { generateWorkoutPlan } from '../utils/workoutGenerator';
-import { generateWorkoutPlanWithGemini } from '../utils/geminiService';
-import { getRandomTip } from '../utils/workoutGenerator';
-import { useToast } from '@/hooks/use-toast';
+import { generateWorkoutPlan, getRandomTip } from '../utils/workoutGenerator';
 
 const Index = () => {
   const [workoutPlan, setWorkoutPlan] = useState<WorkoutPlanType | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [notifications, setNotifications] = useState<NotificationType[]>([]);
-  const { toast } = useToast();
   
+  // Load saved plan from localStorage on mount
   useEffect(() => {
     const savedPlan = localStorage.getItem('workoutPlan');
     
     if (savedPlan) {
       try {
         const parsedPlan = JSON.parse(savedPlan);
+        // Convert string date back to Date object
         parsedPlan.createdAt = new Date(parsedPlan.createdAt);
         setWorkoutPlan(parsedPlan);
       } catch (error) {
@@ -33,15 +28,18 @@ const Index = () => {
     }
   }, []);
   
+  // Save plan to localStorage whenever it changes
   useEffect(() => {
     if (workoutPlan) {
       localStorage.setItem('workoutPlan', JSON.stringify(workoutPlan));
     }
   }, [workoutPlan]);
   
+  // Show a random tip every 60 seconds
   useEffect(() => {
     if (!workoutPlan) return;
     
+    // Show initial tip
     showTip();
     
     const interval = setInterval(() => {
@@ -76,38 +74,29 @@ const Index = () => {
     setIsGenerating(true);
     
     try {
-      const newPlan = await generateWorkoutPlanWithGemini(formData);
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Generate workout plan
+      const newPlan = generateWorkoutPlan(formData);
       
       setWorkoutPlan(newPlan);
       
-      toast({
-        title: "Success!",
-        description: "Your personalized workout plan has been generated with AI.",
-        variant: "default",
-      });
-      
+      // Show success notification
       addNotification({
         id: `success-${Date.now()}`,
-        message: 'Your personalized workout plan has been created using Gemini AI!',
+        message: 'Your workout plan has been generated successfully!',
         type: 'success',
         read: false
       });
     } catch (error) {
       console.error('Error generating workout plan', error);
       
-      const fallbackPlan = generateWorkoutPlan(formData);
-      setWorkoutPlan(fallbackPlan);
-      
-      toast({
-        title: "AI Service Unavailable",
-        description: "Using backup generator. Some features may be limited.",
-        variant: "destructive",
-      });
-      
+      // Show error notification
       addNotification({
-        id: `warning-${Date.now()}`,
-        message: 'Could not connect to Gemini AI. Using backup generator instead.',
-        type: 'warning',
+        id: `error-${Date.now()}`,
+        message: 'Failed to generate workout plan. Please try again.',
+        type: 'error',
         read: false
       });
     } finally {
@@ -120,53 +109,48 @@ const Index = () => {
   };
 
   return (
-    <IntlProvider locale="en">
-      <div className="min-h-screen flex flex-col">
-        <Header 
-          title="AI Workout Planner" 
-          description="Create personalized workout routines tailored to your fitness goals" 
-        />
+    <div className="min-h-screen flex flex-col">
+      <Header 
+        title="AI Workout Planner" 
+        description="Create personalized workout routines tailored to your fitness goals" 
+      />
+      
+      <main className="flex-1 container mx-auto px-4 py-8">
+        {/* Display notifications */}
+        <div className="fixed top-20 right-4 z-50 w-80 space-y-2">
+          {notifications.map(notification => (
+            <Notification
+              key={notification.id}
+              notification={notification}
+              onDismiss={() => removeNotification(notification.id)}
+            />
+          ))}
+        </div>
         
-        <main className="flex-1 container mx-auto px-4 py-8">
-          <div className="fixed top-20 right-4 z-50 w-80 space-y-2">
-            {notifications.map(notification => (
-              <Notification
-                key={notification.id}
-                notification={notification}
-                onDismiss={() => removeNotification(notification.id)}
-              />
-            ))}
-          </div>
-          
-          <div className="max-w-7xl mx-auto space-y-8">
-            {!workoutPlan ? (
-              <div className="max-w-3xl mx-auto">
-                <WorkoutForm onSubmit={handleFormSubmit} isLoading={isGenerating} />
-              </div>
-            ) : (
-              <div>
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-display font-medium">Your Workout Plan</h2>
-                  
-                  <Button
-                    onClick={() => setWorkoutPlan(null)}
-                    themeColor="base"
-                    fillMode="outline"
-                    size="medium"
-                    icon="plus-circle"
-                  >
-                    <PlusCircle className="w-4 h-4 mr-2" />
-                    Create New Plan
-                  </Button>
-                </div>
+        <div className="max-w-7xl mx-auto space-y-8">
+          {!workoutPlan ? (
+            <div className="max-w-3xl mx-auto">
+              <WorkoutForm onSubmit={handleFormSubmit} isLoading={isGenerating} />
+            </div>
+          ) : (
+            <div>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-medium">Your Workout Plan</h2>
                 
-                <WorkoutPlan plan={workoutPlan} onUpdate={handlePlanUpdate} />
+                <button
+                  onClick={() => setWorkoutPlan(null)}
+                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Create New Plan
+                </button>
               </div>
-            )}
-          </div>
-        </main>
-      </div>
-    </IntlProvider>
+              
+              <WorkoutPlan plan={workoutPlan} onUpdate={handlePlanUpdate} />
+            </div>
+          )}
+        </div>
+      </main>
+    </div>
   );
 };
 

@@ -1,6 +1,5 @@
-
 import * as React from "react"
-import { Button as KendoButton } from "@progress/kendo-react-buttons"
+import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
@@ -37,33 +36,18 @@ const buttonVariants = cva(
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
-  kendoStyle?: boolean
+  asChild?: boolean
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, children, ...props }, ref) => {
-    const buttonThemeColor = variant === 'destructive' ? 'error' : 
-                            variant === 'secondary' ? 'info' : 
-                            variant === 'outline' ? 'base' : 'primary';
-                            
-    const buttonSize = size === 'sm' ? 'small' : 
-                      size === 'lg' ? 'large' : 'medium';
-                      
-    const buttonAppearance = variant === 'outline' ? 'outline' : 
-                            variant === 'ghost' ? 'flat' : 
-                            variant === 'link' ? 'link' : 'solid';
-    
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button"
     return (
-      <KendoButton
-        ref={ref as any}
-        themeColor={buttonThemeColor}
-        size={buttonSize}
-        className={cn(className)}
-        fillMode={buttonAppearance}
+      <Comp
+        className={cn(buttonVariants({ variant, size, className }))}
+        ref={ref}
         {...props}
-      >
-        {children}
-      </KendoButton>
+      />
     )
   }
 )
