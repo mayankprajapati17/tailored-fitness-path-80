@@ -30,7 +30,7 @@ const Jobs = () => {
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-semibold">Your Job Applications</h2>
                 <JobForm 
-                  onSubmit={() => {}} // Add an empty function for now
+                  onSubmit={() => {}} 
                   onJobAdded={handleJobAdded} 
                 />
               </div>

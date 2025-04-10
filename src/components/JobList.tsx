@@ -1,21 +1,22 @@
+
 import React from 'react';
 import JobCard from './JobCard';
 import { Job, FilterOptions } from '../types';
 
 interface JobListProps {
-  jobs: Job[];
-  onStatusChange: (id: string, status: string) => void;
-  onDelete: (id: string) => void;
-  isLoading: boolean;
+  jobs?: Job[];
+  onStatusChange?: (id: string, status: string) => void;
+  onDelete?: (id: string) => void;
+  isLoading?: boolean;
   filter?: FilterOptions;
   refreshTrigger?: number;
 }
 
 const JobList: React.FC<JobListProps> = ({ 
-  jobs, 
-  onStatusChange, 
-  onDelete, 
-  isLoading,
+  jobs = [], 
+  onStatusChange = () => {}, 
+  onDelete = () => {}, 
+  isLoading = false,
   filter,
   refreshTrigger
 }) => {
