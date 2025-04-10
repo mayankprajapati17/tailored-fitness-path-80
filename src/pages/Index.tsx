@@ -1,155 +1,179 @@
 
-import { useState, useEffect } from 'react';
-import Header from '../components/Header';
-import WorkoutForm from '../components/WorkoutForm';
-import WorkoutPlan from '../components/WorkoutPlan';
-import Notification from '../components/Notification';
-import { WorkoutFormData, WorkoutPlan as WorkoutPlanType, Notification as NotificationType } from '../types';
-import { generateWorkoutPlan, getRandomTip } from '../utils/workoutGenerator';
+import React, { useState, useEffect } from 'react';
+import { toast } from "sonner";
+import JobForm from '../components/JobForm';
+import JobList from '../components/JobList';
+import { Job } from '../types';
 
 const Index = () => {
-  const [workoutPlan, setWorkoutPlan] = useState<WorkoutPlanType | null>(null);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [notifications, setNotifications] = useState<NotificationType[]>([]);
-  
-  // Load saved plan from localStorage on mount
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+
   useEffect(() => {
-    const savedPlan = localStorage.getItem('workoutPlan');
-    
-    if (savedPlan) {
-      try {
-        const parsedPlan = JSON.parse(savedPlan);
-        // Convert string date back to Date object
-        parsedPlan.createdAt = new Date(parsedPlan.createdAt);
-        setWorkoutPlan(parsedPlan);
-      } catch (error) {
-        console.error('Error parsing saved workout plan', error);
-      }
-    }
+    fetchJobs();
   }, []);
-  
-  // Save plan to localStorage whenever it changes
-  useEffect(() => {
-    if (workoutPlan) {
-      localStorage.setItem('workoutPlan', JSON.stringify(workoutPlan));
-    }
-  }, [workoutPlan]);
-  
-  // Show a random tip every 60 seconds
-  useEffect(() => {
-    if (!workoutPlan) return;
-    
-    // Show initial tip
-    showTip();
-    
-    const interval = setInterval(() => {
-      showTip();
-    }, 60000);
-    
-    return () => clearInterval(interval);
-  }, [workoutPlan]);
-  
-  const showTip = () => {
-    if (!workoutPlan) return;
-    
-    const tip = getRandomTip(workoutPlan.goal);
-    
-    addNotification({
-      id: `tip-${Date.now()}`,
-      message: tip,
-      type: 'tip',
-      read: false
-    });
-  };
-  
-  const addNotification = (notification: NotificationType) => {
-    setNotifications(prev => [notification, ...prev]);
-  };
-  
-  const removeNotification = (id: string) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
-  };
-  
-  const handleFormSubmit = async (formData: WorkoutFormData) => {
-    setIsGenerating(true);
-    
+
+  const fetchJobs = async () => {
+    setIsLoading(true);
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Generate workout plan
-      const newPlan = generateWorkoutPlan(formData);
-      
-      setWorkoutPlan(newPlan);
-      
-      // Show success notification
-      addNotification({
-        id: `success-${Date.now()}`,
-        message: 'Your workout plan has been generated successfully!',
-        type: 'success',
-        read: false
-      });
+      const response = await fetch(`${API_URL}/jobs`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch jobs');
+      }
+      const data = await response.json();
+      setJobs(data);
     } catch (error) {
-      console.error('Error generating workout plan', error);
-      
-      // Show error notification
-      addNotification({
-        id: `error-${Date.now()}`,
-        message: 'Failed to generate workout plan. Please try again.',
-        type: 'error',
-        read: false
-      });
+      console.error('Error fetching jobs:', error);
+      toast.error('Failed to load job applications');
     } finally {
-      setIsGenerating(false);
+      setIsLoading(false);
     }
-  };
-  
-  const handlePlanUpdate = (updatedPlan: WorkoutPlanType) => {
-    setWorkoutPlan(updatedPlan);
   };
 
+  const addJob = async (job: Omit<Job, '_id'>) => {
+    try {
+      const response = await fetch(`${API_URL}/jobs`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(job),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add job');
+      }
+
+      const newJob = await response.json();
+      setJobs(prevJobs => [...prevJobs, newJob]);
+      toast.success('Job application added successfully!');
+    } catch (error) {
+      console.error('Error adding job:', error);
+      toast.error('Failed to add job application');
+    }
+  };
+
+  const updateJobStatus = async (id: string, status: string) => {
+    try {
+      const response = await fetch(`${API_URL}/jobs/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update job status');
+      }
+
+      const updatedJob = await response.json();
+      setJobs(prevJobs => 
+        prevJobs.map(job => job._id === id ? updatedJob : job)
+      );
+      toast.success('Job status updated!');
+    } catch (error) {
+      console.error('Error updating job status:', error);
+      toast.error('Failed to update job status');
+    }
+  };
+
+  const deleteJob = async (id: string) => {
+    try {
+      const response = await fetch(`${API_URL}/jobs/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete job');
+      }
+
+      setJobs(prevJobs => prevJobs.filter(job => job._id !== id));
+      toast.success('Job application deleted');
+    } catch (error) {
+      console.error('Error deleting job:', error);
+      toast.error('Failed to delete job application');
+    }
+  };
+
+  const filteredJobs = jobs
+    .filter(job => statusFilter === 'all' || job.status === statusFilter)
+    .sort((a, b) => {
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
+      return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+    });
+
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header 
-        title="AI Workout Planner" 
-        description="Create personalized workout routines tailored to your fitness goals" 
-      />
-      
-      <main className="flex-1 container mx-auto px-4 py-8">
-        {/* Display notifications */}
-        <div className="fixed top-20 right-4 z-50 w-80 space-y-2">
-          {notifications.map(notification => (
-            <Notification
-              key={notification.id}
-              notification={notification}
-              onDismiss={() => removeNotification(notification.id)}
-            />
-          ))}
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-gradient-to-r from-blue-600 to-blue-800 text-white">
+        <div className="container mx-auto px-4 py-8">
+          <h1 className="text-3xl font-bold text-center">Student Job Tracker</h1>
+          <p className="text-center mt-2 text-blue-100">Keep track of your job applications in one place</p>
         </div>
-        
-        <div className="max-w-7xl mx-auto space-y-8">
-          {!workoutPlan ? (
-            <div className="max-w-3xl mx-auto">
-              <WorkoutForm onSubmit={handleFormSubmit} isLoading={isGenerating} />
+      </header>
+
+      <main className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="md:col-span-1">
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h2 className="text-xl font-semibold mb-4">Add New Application</h2>
+              <JobForm onSubmit={addJob} />
             </div>
-          ) : (
-            <div>
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-medium">Your Workout Plan</h2>
+          </div>
+          
+          <div className="md:col-span-2">
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+                <h2 className="text-xl font-semibold">Your Applications</h2>
                 
-                <button
-                  onClick={() => setWorkoutPlan(null)}
-                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  Create New Plan
-                </button>
+                <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mt-2 sm:mt-0">
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="border rounded px-3 py-1 text-sm"
+                  >
+                    <option value="all">All Statuses</option>
+                    <option value="Applied">Applied</option>
+                    <option value="Interview">Interview</option>
+                    <option value="Offer">Offer</option>
+                    <option value="Rejected">Rejected</option>
+                  </select>
+                  
+                  <select
+                    value={sortOrder}
+                    onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
+                    className="border rounded px-3 py-1 text-sm"
+                  >
+                    <option value="desc">Newest First</option>
+                    <option value="asc">Oldest First</option>
+                  </select>
+                </div>
               </div>
               
-              <WorkoutPlan plan={workoutPlan} onUpdate={handlePlanUpdate} />
+              <JobList 
+                jobs={filteredJobs}
+                onStatusChange={updateJobStatus}
+                onDelete={deleteJob}
+                isLoading={isLoading}
+              />
             </div>
-          )}
+          </div>
         </div>
       </main>
+      
+      <footer className="bg-gray-800 text-white py-4 mt-8">
+        <div className="container mx-auto px-4 text-center">
+          <p>Student Job Tracker &copy; {new Date().getFullYear()}</p>
+          <p className="text-sm text-gray-400 mt-1">
+            Keep organized in your job search
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };

@@ -1,69 +1,93 @@
-# Welcome to your Lovable project
 
-## Project info
+# Student Job Tracker
 
-**URL**: https://lovable.dev/projects/f43002f1-63f3-40d5-98bd-d5d3580974b2
+A web application for students to track their job applications throughout the job search process.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- Add new job applications with company, role, status, date, and optional link
+- View all applications in a responsive table or card layout
+- Filter applications by status
+- Sort applications by date (newest/oldest)
+- Update the status of applications as they progress
+- Delete applications when no longer needed
 
-**Use Lovable**
+## Tech Stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/f43002f1-63f3-40d5-98bd-d5d3580974b2) and start prompting.
+### Frontend
+- React with Hooks
+- TailwindCSS for styling
+- React Router for navigation
+- Sonner for toast notifications
 
-Changes made via Lovable will be committed automatically to this repo.
+### Backend
+- Node.js
+- Express.js for API routes
+- MongoDB with Mongoose for data storage
 
-**Use your preferred IDE**
+## Deployment Instructions
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Prerequisites
+- Node.js and npm installed
+- MongoDB Atlas account
+- Vercel account (for frontend)
+- Render or Railway account (for backend)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Database Setup (MongoDB Atlas)
 
-Follow these steps:
+1. Create a new MongoDB Atlas cluster
+2. Create a database named `job-tracker`
+3. Create a collection named `jobs`
+4. Get your MongoDB connection string (will look like: `mongodb+srv://<username>:<password>@cluster0.mongodb.net/job-tracker`)
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Backend Deployment (Render)
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+1. Create a new Web Service in Render
+2. Connect to your GitHub repository
+3. Set the build command: `npm install`
+4. Set the start command: `node server/index.js`
+5. Add the environment variable `MONGODB_URI` with your MongoDB Atlas connection string
+6. Deploy the service
+7. Take note of the URL of your deployed backend (e.g., https://student-job-tracker-api.onrender.com)
 
-# Step 3: Install the necessary dependencies.
-npm i
+### Frontend Deployment (Vercel)
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+1. Create a new project in Vercel
+2. Connect to your GitHub repository
+3. Add the environment variable `VITE_API_URL` with your backend URL (e.g., https://student-job-tracker-api.onrender.com/api)
+4. Deploy the project
+
+## Local Development
+
+### Backend
+
+1. Navigate to the server directory: `cd server`
+2. Create a `.env` file based on `.env.example` and add your MongoDB URI
+3. Install dependencies: `npm install`
+4. Start the development server: `node index.js`
+
+### Frontend
+
+1. Install dependencies: `npm install`
+2. Create a `.env` file with `VITE_API_URL=http://localhost:3001/api`
+3. Start the development server: `npm run dev`
+
+## Project Structure
+
 ```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with .
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/f43002f1-63f3-40d5-98bd-d5d3580974b2) and click on Share -> Publish.
-
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+student-job-tracker/
+├── src/
+│   ├── components/
+│   │   ├── JobCard.tsx
+│   │   ├── JobForm.tsx
+│   │   └── JobList.tsx
+│   ├── pages/
+│   │   └── Index.tsx
+│   ├── types/
+│   │   └── index.ts
+│   ├── App.tsx
+│   └── main.tsx
+└── server/
+    ├── index.js
+    └── .env.example
+```
