@@ -10,7 +10,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { toast } from "sonner";
 import { UserPlus, LogIn } from "lucide-react";
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+// Use the correct API URL - if VITE_API_URL is not defined, use the server running on the same network
+const API_URL = 'http://localhost:3001/api';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -33,6 +34,8 @@ const Auth = () => {
         ? { email, password } 
         : { name, email, password };
       
+      console.log(`Attempting to ${endpoint} with API URL: ${API_URL}`);
+      
       const response = await fetch(`${API_URL}/auth/${endpoint}`, {
         method: 'POST',
         headers: {
@@ -41,11 +44,12 @@ const Auth = () => {
         body: JSON.stringify(userData),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.message || 'Authentication failed');
+        const errorData = await response.json().catch(() => ({ message: 'Server error' }));
+        throw new Error(errorData.message || `${isLogin ? 'Login' : 'Registration'} failed`);
       }
+
+      const data = await response.json();
 
       // Store the token and user info in localStorage
       localStorage.setItem('jobTrackerToken', data.token);
@@ -59,7 +63,13 @@ const Auth = () => {
       navigate('/jobs');
       
     } catch (err: any) {
-      setError(err.message || 'Authentication failed. Please try again.');
+      console.error('Auth error:', err);
+      
+      if (err.message === 'Failed to fetch') {
+        setError('Cannot connect to server. Please check if the backend is running and accessible.');
+      } else {
+        setError(err.message || 'Authentication failed. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
