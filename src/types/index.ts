@@ -8,6 +8,12 @@ export interface Job {
   link?: string;
 }
 
+export interface FilterOptions {
+  status: 'All' | 'Applied' | 'Interview' | 'Offer' | 'Rejected';
+  sortBy: 'date' | 'company' | 'role';
+  sortDirection: 'asc' | 'desc';
+}
+
 export interface Notification {
   id: string;
   message: string;
