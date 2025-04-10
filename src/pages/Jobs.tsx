@@ -29,7 +29,10 @@ const Jobs = () => {
             <div className="mb-6">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-lg font-semibold">Your Job Applications</h2>
-                <JobForm onJobAdded={handleJobAdded} />
+                <JobForm 
+                  onSubmit={() => {}} // Add an empty function for now
+                  onJobAdded={handleJobAdded} 
+                />
               </div>
               <JobFilter filter={filter} onFilterChange={setFilter} />
             </div>

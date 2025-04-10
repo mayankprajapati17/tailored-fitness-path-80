@@ -4,9 +4,10 @@ import { Job } from '../types';
 
 interface JobFormProps {
   onSubmit: (job: Omit<Job, '_id'>) => void;
+  onJobAdded?: () => void; // Add this prop
 }
 
-const JobForm: React.FC<JobFormProps> = ({ onSubmit }) => {
+const JobForm: React.FC<JobFormProps> = ({ onSubmit, onJobAdded }) => {
   const [formData, setFormData] = useState({
     company: '',
     role: '',
@@ -29,6 +30,11 @@ const JobForm: React.FC<JobFormProps> = ({ onSubmit }) => {
     }
     
     onSubmit(formData);
+    
+    // Call the onJobAdded callback if provided
+    if (onJobAdded) {
+      onJobAdded();
+    }
     
     // Reset form
     setFormData({

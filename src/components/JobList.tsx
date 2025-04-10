@@ -1,16 +1,24 @@
-
 import React from 'react';
 import JobCard from './JobCard';
-import { Job } from '../types';
+import { Job, FilterOptions } from '../types';
 
 interface JobListProps {
   jobs: Job[];
   onStatusChange: (id: string, status: string) => void;
   onDelete: (id: string) => void;
   isLoading: boolean;
+  filter?: FilterOptions;
+  refreshTrigger?: number;
 }
 
-const JobList: React.FC<JobListProps> = ({ jobs, onStatusChange, onDelete, isLoading }) => {
+const JobList: React.FC<JobListProps> = ({ 
+  jobs, 
+  onStatusChange, 
+  onDelete, 
+  isLoading,
+  filter,
+  refreshTrigger
+}) => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center p-8">
